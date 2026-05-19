@@ -8,6 +8,9 @@ import Register from "../pages/Register";
 
 import MainLayout from "../layouts/MainLayout";
 import ProductDetails from "../pages/ProductDetails";
+import Dashboard from "../pages/Dashboard";
+
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -19,6 +22,14 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
             <Route path="/products/:id" element={<ProductDetails />} />
+            <Route
+             path="/dashboard"
+            element={
+                 <ProtectedRoute>
+                    <Dashboard />
+                   </ProtectedRoute>
+                   }
+                 />
       </Routes>
     </MainLayout>
   );
