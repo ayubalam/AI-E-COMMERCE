@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <section className="w-full min-h-screen bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white flex items-center">
+    <section className="w-full min-h-[90vh] bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 text-white flex items-center">
       
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         
