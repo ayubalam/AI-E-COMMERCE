@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
+import useCart from "../../hooks/useCart";
 
 const ProductCard = ({ product }) => {
+
+  const { addToCart } = useCart();
+
   return (
     <div className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2">
       
@@ -29,7 +33,10 @@ const ProductCard = ({ product }) => {
             ${product.price}
           </span>
 
-          <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
+          <button
+            onClick={() => addToCart(product)}
+            className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition"
+          >
             Add To Cart
           </button>
         </div>
