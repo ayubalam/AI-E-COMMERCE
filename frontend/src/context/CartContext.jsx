@@ -1,12 +1,10 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import CartContext from "./cartContext";
 
-export const CartProvider = ({ children }) => {
+const CartProvider = ({ children }) => {
 
+  // Load Cart From LocalStorage
   const [cartItems, setCartItems] = useState(() => {
 
     const savedCart =
@@ -17,6 +15,7 @@ export const CartProvider = ({ children }) => {
       : [];
   });
 
+  // Save Cart To LocalStorage
   useEffect(() => {
 
     localStorage.setItem(
@@ -121,3 +120,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+export { CartProvider };

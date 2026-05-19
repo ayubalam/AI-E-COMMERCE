@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import products from "../data/products";
 import useCart from "../hooks/useCart";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
 
@@ -83,13 +84,19 @@ const ProductDetails = () => {
 
             {/* Buttons */}
             <div className="mt-10 flex flex-wrap gap-5">
+                        <button
+  onClick={() => {
+    addToCart(product);
+    toast.success("Product added to cart");
+  }}
+  className="mt-10 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
+>
+  Add To Cart
+</button>
+                
               
-              <button
-                onClick={() => addToCart(product)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
-              >
-                Add To Cart
-              </button>
+             
+             
 
               <button className="border border-slate-300 hover:bg-slate-100 px-8 py-4 rounded-2xl text-lg font-semibold transition">
                 Buy Now

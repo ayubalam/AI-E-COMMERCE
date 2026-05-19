@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import useCart from "../../hooks/useCart";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ product }) => {
 
@@ -33,12 +34,15 @@ const ProductCard = ({ product }) => {
             ${product.price}
           </span>
 
-          <button
-            onClick={() => addToCart(product)}
-            className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition"
-          >
-            Add To Cart
-          </button>
+         <button
+  onClick={() => {
+    addToCart(product);
+    toast.success("Product added to cart");
+  }}
+  className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition"
+>
+  Add To Cart
+</button>
         </div>
       </div>
     </div>
