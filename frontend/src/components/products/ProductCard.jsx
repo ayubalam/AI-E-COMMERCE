@@ -1,6 +1,6 @@
 const ProductCard = ({ product }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2">
+    <div className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2">
       
       <img
         src={product.image}
@@ -9,20 +9,23 @@ const ProductCard = ({ product }) => {
       />
 
       <div className="p-5">
-        <h3 className="text-xl font-bold">{product.name}</h3>
-
-        <p className="text-slate-500 mt-2">
-          {product.description}
+        
+        <p className="text-sm text-blue-600 font-medium">
+          {product.category}
         </p>
 
-        <div className="flex items-center justify-between mt-5">
+        <h3 className="text-2xl font-bold mt-2">
+          {product.name}
+        </h3>
+
+        <div className="flex items-center justify-between mt-6">
           
-          <span className="text-2xl font-bold text-blue-600">
+          <span className="text-2xl font-bold text-slate-800">
             ${product.price}
           </span>
 
-          <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700">
-            Add
+          <button className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 transition">
+            Add To Cart
           </button>
         </div>
       </div>
