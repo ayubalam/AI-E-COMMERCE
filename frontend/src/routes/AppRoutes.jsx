@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 
 import MainLayout from "../layouts/MainLayout";
+import ProductDetails from "../pages/ProductDetails";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
       </Routes>
     </MainLayout>
   );

@@ -1,12 +1,17 @@
+import { Link } from "react-router-dom";
+
 const ProductCard = ({ product }) => {
   return (
     <div className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2">
       
-      <img
-        src={product.image}
-        alt={product.name}
-        className="h-64 w-full object-cover"
-      />
+      <Link to={`/products/${product.id}`}>
+        
+        <img
+          src={product.image}
+          alt={product.name}
+          className="h-64 w-full object-cover"
+        />
+      </Link>
 
       <div className="p-5">
         
