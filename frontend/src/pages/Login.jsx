@@ -2,15 +2,13 @@ import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import toast from "react-hot-toast";
+import axios from "axios";
 
-import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Login = () => {
 
   const navigate = useNavigate();
-
-  const { login } = useAuth();
 
   const [formData, setFormData] =
     useState({
@@ -22,54 +20,74 @@ const Login = () => {
 
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit =
-    async (e) => {
+  const handleSubmit = async (e) => {
 
-      e.preventDefault();
+    e.preventDefault();
 
-      try {
+    try {
 
-        await login(formData);
-
-        toast.success(
-          "Login Successful"
+      const { data } =
+        await axios.post(
+          "http://localhost:5000/api/auth/login",
+          formData
         );
 
-        navigate("/dashboard");
+      localStorage.setItem(
+        "token",
+        data.token
+      );
 
-      } catch (error) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
-        toast.error(
-          error.response?.data
-            ?.message ||
-            "Login Failed"
-        );
-      }
-    };
+      toast.success(
+        "Login Successful"
+      );
+
+      navigate("/");
+
+    } catch (error) {
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Login Failed"
+      );
+    }
+  };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 px-6">
+    <section className="min-h-screen bg-slate-100 flex items-center justify-center px-4 py-10">
 
-      <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl p-10">
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 md:p-10">
 
-        <h1 className="text-4xl font-bold text-center text-slate-800 dark:text-white mb-8">
-          Login
-        </h1>
+        {/* Heading */}
+        <div className="text-center mb-8">
 
+          <h1 className="text-4xl font-bold text-slate-800">
+            Login
+          </h1>
+
+          <p className="text-slate-500 mt-2">
+            Welcome back
+          </p>
+        </div>
+
+        {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="space-y-6"
+          className="space-y-5"
         >
 
           {/* Email */}
           <div>
 
-            <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
+            <label className="block font-medium mb-2">
               Email
             </label>
 
@@ -78,8 +96,8 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Enter email"
-              className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-white"
+              placeholder="Enter your email"
+              className="w-full border border-slate-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -87,7 +105,7 @@ const Login = () => {
           {/* Password */}
           <div>
 
-            <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
+            <label className="block font-medium mb-2">
               Password
             </label>
 
@@ -97,7 +115,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter password"
-              className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-white"
+              className="w-full border border-slate-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -111,13 +129,14 @@ const Login = () => {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-slate-600 dark:text-slate-300">
+        {/* Footer */}
+        <p className="text-center text-slate-500 mt-6">
 
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
 
           <Link
             to="/register"
-            className="text-blue-600 font-semibold"
+            className="text-blue-600 font-semibold hover:underline"
           >
             Register
           </Link>
