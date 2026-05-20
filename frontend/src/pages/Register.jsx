@@ -1,47 +1,121 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+
+import { Link, useNavigate } from "react-router-dom";
+
+import toast from "react-hot-toast";
 
 const Register = () => {
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // Handle Input
+  const handleChange = (e) => {
+
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle Submit
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password
+    ) {
+      return toast.error("All fields required");
+    }
+
+    toast.success("Registration Successful");
+
+    navigate("/login");
+  };
+
   return (
-    <section className="min-h-screen bg-slate-100 flex items-center justify-center px-6 py-16">
-      
-      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg">
-        
-        <h1 className="text-4xl font-bold text-center">
-          Create Account
+    <section className="min-h-screen flex items-center justify-center bg-slate-100 px-6">
+
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-10">
+
+        <h1 className="text-4xl font-bold text-center text-blue-600">
+          Register
         </h1>
 
-        <p className="text-slate-500 text-center mt-3">
-          Join AI Smart Commerce today
-        </p>
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 space-y-6"
+        >
 
-        <form className="mt-8 flex flex-col gap-5">
-          
-          <input
-            type="text"
-            placeholder="Enter your name"
-            className="border border-slate-300 px-5 py-4 rounded-2xl outline-none focus:border-blue-500"
-          />
+          {/* Name */}
+          <div>
+            <label className="font-medium">
+              Name
+            </label>
 
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="border border-slate-300 px-5 py-4 rounded-2xl outline-none focus:border-blue-500"
-          />
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Create password"
-            className="border border-slate-300 px-5 py-4 rounded-2xl outline-none focus:border-blue-500"
-          />
+          {/* Email */}
+          <div>
+            <label className="font-medium">
+              Email
+            </label>
 
-          <button className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold transition">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="font-medium">
+              Password
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition duration-300"
+          >
             Register
           </button>
         </form>
 
-        <p className="text-center mt-6 text-slate-500">
+        {/* Login Link */}
+        <p className="text-center mt-6 text-slate-600">
           Already have an account?{" "}
-          
+
           <Link
             to="/login"
             className="text-blue-600 font-semibold"
@@ -54,4 +128,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Register;  

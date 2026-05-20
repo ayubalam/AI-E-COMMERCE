@@ -17,6 +17,7 @@ const Login = () => {
     password: "",
   });
 
+  // Handle Input
   const handleChange = (e) => {
 
     setFormData({
@@ -25,63 +26,88 @@ const Login = () => {
     });
   };
 
+  // Handle Submit
   const handleSubmit = (e) => {
 
     e.preventDefault();
 
+    // Validation
+    if (
+      !formData.email ||
+      !formData.password
+    ) {
+      return toast.error("All fields required");
+    }
+
+    // Fake Login
     login({
       email: formData.email,
     });
 
-    toast.success("Login successful");
+    toast.success("Login Successful");
 
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (
-    <section className="min-h-screen bg-slate-100 flex items-center justify-center px-6 py-16">
-      
-      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg">
-        
-        <h1 className="text-4xl font-bold text-center">
-          Welcome Back
-        </h1>
+    <section className="min-h-screen flex items-center justify-center bg-slate-100 px-6">
 
-        <p className="text-slate-500 text-center mt-3">
-          Login to continue shopping
-        </p>
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-10">
+
+        <h1 className="text-4xl font-bold text-center text-blue-600">
+          Login
+        </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="mt-8 flex flex-col gap-5"
+          className="mt-8 space-y-6"
         >
-          
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border border-slate-300 px-5 py-4 rounded-2xl outline-none focus:border-blue-500"
-          />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            className="border border-slate-300 px-5 py-4 rounded-2xl outline-none focus:border-blue-500"
-          />
+          {/* Email */}
+          <div>
+            <label className="font-medium">
+              Email
+            </label>
 
-          <button className="bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold transition">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="font-medium">
+              Password
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition duration-300"
+          >
             Login
           </button>
         </form>
 
-        <p className="text-center mt-6 text-slate-500">
-          Don’t have an account?{" "}
-          
+        {/* Register Link */}
+        <p className="text-center mt-6 text-slate-600">
+          Don't have an account?{" "}
+
           <Link
             to="/register"
             className="text-blue-600 font-semibold"

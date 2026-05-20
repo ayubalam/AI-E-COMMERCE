@@ -1,38 +1,26 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-import AuthContext from "./authContext";
+import AuthContext from "./AuthContextObject";
 
 const AuthProvider = ({ children }) => {
-
+  // Load User From LocalStorage
   const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user");
 
-    const savedUser =
-      localStorage.getItem("user");
-
-    return savedUser
-      ? JSON.parse(savedUser)
-      : null;
+    return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  // Save User
+  // Save User To LocalStorage
   useEffect(() => {
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(user)
-    );
-
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  // Login
+  // Login Function
   const login = (userData) => {
     setUser(userData);
   };
 
-  // Logout
+  // Logout Function
   const logout = () => {
     setUser(null);
   };
