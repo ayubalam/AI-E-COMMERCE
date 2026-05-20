@@ -6,20 +6,30 @@ import CartProvider from "./context/CartContext";
 
 import AuthProvider from "./context/AuthProvider";
 
+import WishlistProvider from "./context/WishlistContext";
+
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
     <BrowserRouter>
+
       <AuthProvider>
+
         <CartProvider>
 
-          <Toaster position="top-right" />
+          <WishlistProvider>
 
-          <AppRoutes />
+            <Toaster position="top-right" />
+
+            <AppRoutes />
+
+          </WishlistProvider>
 
         </CartProvider>
+
       </AuthProvider>
+
     </BrowserRouter>
   );
 };

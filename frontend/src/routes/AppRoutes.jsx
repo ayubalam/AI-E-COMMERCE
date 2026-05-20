@@ -7,6 +7,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ProductDetails from "../pages/ProductDetails";
 import Dashboard from "../pages/Dashboard";
+import Wishlist from "../pages/Wishlist";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -28,6 +29,10 @@ const AppRoutes = () => {
           path="/products"
           element={<Products />}
         />
+           <Route
+                 path="/wishlist"
+             element={<Wishlist />}
+            />
 
         <Route
           path="/products/:id"
