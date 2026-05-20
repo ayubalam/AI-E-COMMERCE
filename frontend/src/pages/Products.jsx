@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 import ProductCard from "../components/products/ProductCard";
+
 import SearchBar from "../components/products/SearchBar";
+
 import FilterSidebar from "../components/products/FilterSidebar";
 
 import productsData from "../data/products";
@@ -41,18 +43,18 @@ const Products = () => {
     });
 
   return (
-    <section className="bg-slate-100 min-h-screen py-16">
+    <section className="bg-slate-100 dark:bg-slate-950 min-h-screen py-16 transition duration-300">
 
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Heading */}
         <div className="mb-12">
 
-          <h1 className="text-5xl font-bold text-slate-800">
+          <h1 className="text-5xl font-bold text-slate-800 dark:text-white">
             Explore Products
           </h1>
 
-          <p className="text-slate-500 mt-4 text-lg">
+          <p className="text-slate-500 dark:text-slate-300 mt-4 text-lg">
             Discover smart AI-powered shopping products.
           </p>
         </div>
@@ -88,7 +90,7 @@ const Products = () => {
             {filteredProducts.length ===
             0 ? (
 
-              <div className="bg-white rounded-3xl shadow-lg p-10 text-center text-2xl font-semibold text-slate-500">
+              <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-10 text-center text-2xl font-semibold text-slate-500 dark:text-slate-300 transition duration-300">
                 No Products Found
               </div>
 
