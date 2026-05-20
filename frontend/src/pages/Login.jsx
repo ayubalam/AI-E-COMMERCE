@@ -1,116 +1,141 @@
 import { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  Link,
+} from "react-router-dom";
 
 import toast from "react-hot-toast";
+
+import API from "../api/axios";
 
 import useAuth from "../hooks/useAuth";
 
 const Login = () => {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const { login } = useAuth();
+  const { login } =
+    useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData,
+    setFormData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
   // Handle Input
-  const handleChange = (e) => {
+  const handleChange = (
+    e
+  ) => {
 
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
-  // Handle Submit
-  const handleSubmit = (e) => {
+  // Submit
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    // Validation
-    if (
-      !formData.email ||
-      !formData.password
-    ) {
-      return toast.error("All fields required");
-    }
+      try {
 
-    // Fake Login
-    login({
-      email: formData.email,
-    });
+        const { data } =
+          await API.post(
+            "/auth/login",
+            formData
+          );
 
-    toast.success("Login Successful");
+        localStorage.setItem(
+          "token",
+          data.token
+        );
 
-    navigate("/dashboard");
-  };
+        login(data.user);
+
+        toast.success(
+          "Login Successful 🚀"
+        );
+
+        navigate(
+          "/dashboard"
+        );
+
+      } catch (error) {
+
+        toast.error(
+          error.response?.data
+            ?.message ||
+            "Login Failed"
+        );
+      }
+    };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-slate-100 px-6">
+    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center px-6">
 
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-10">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 max-w-lg w-full">
 
-        <h1 className="text-4xl font-bold text-center text-blue-600">
-          Login
+        <h1 className="text-4xl font-bold text-center text-slate-800 dark:text-white">
+          Welcome Back
         </h1>
 
         <form
-          onSubmit={handleSubmit}
-          className="mt-8 space-y-6"
+          onSubmit={
+            handleSubmit
+          }
+          className="mt-10 space-y-6"
         >
 
-          {/* Email */}
-          <div>
-            <label className="font-medium">
-              Email
-            </label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            value={
+              formData.email
+            }
+            onChange={
+              handleChange
+            }
+            className="w-full bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
+          />
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            value={
+              formData.password
+            }
+            onChange={
+              handleChange
+            }
+            className="w-full bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
+          />
 
-          {/* Password */}
-          <div>
-            <label className="font-medium">
-              Password
-            </label>
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full mt-2 border border-slate-300 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
-            />
-          </div>
-
-          {/* Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition duration-300"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold transition duration-300"
           >
             Login
           </button>
         </form>
 
-        {/* Register Link */}
-        <p className="text-center mt-6 text-slate-600">
-          Don't have an account?{" "}
+        <p className="text-center text-slate-500 dark:text-slate-300 mt-8">
+
+          Don't have account?
 
           <Link
             to="/register"
-            className="text-blue-600 font-semibold"
+            className="text-blue-600 font-semibold ml-2"
           >
             Register
           </Link>
