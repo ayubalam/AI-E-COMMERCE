@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -59,6 +60,11 @@ app.get("/test", async (req, res) => {
     });
   }
 });
+
+app.use(
+  "/api/auth",
+  authRoutes
+);
 
 // MongoDB Connect
 mongoose
