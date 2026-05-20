@@ -1,31 +1,25 @@
 import { useState } from "react";
 
-import {
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import toast from "react-hot-toast";
 
-import API from "../api/axios";
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const [formData,
-    setFormData] =
+  const { register } = useAuth();
+
+  const [formData, setFormData] =
     useState({
       name: "",
       email: "",
       password: "",
     });
 
-  // Handle Input
-  const handleChange = (
-    e
-  ) => {
+  const handleChange = (e) => {
 
     setFormData({
       ...formData,
@@ -34,7 +28,6 @@ const Register = () => {
     });
   };
 
-  // Submit
   const handleSubmit =
     async (e) => {
 
@@ -42,31 +35,13 @@ const Register = () => {
 
       try {
 
-        const { data } =
-          await API.post(
-            "/auth/register",
-            formData
-          );
-
-        localStorage.setItem(
-          "token",
-          data.token
-        );
-
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            data.user
-          )
-        );
+        await register(formData);
 
         toast.success(
-          "Registration Successful 🚀"
+          "Registration Successful"
         );
 
-        navigate(
-          "/dashboard"
-        );
+        navigate("/dashboard");
 
       } catch (error) {
 
@@ -79,78 +54,89 @@ const Register = () => {
     };
 
   return (
-    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center px-6">
+    <section className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900 px-6">
 
-      <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 max-w-lg w-full">
+      <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl shadow-2xl p-10">
 
-        <h1 className="text-4xl font-bold text-center text-slate-800 dark:text-white">
-          Create Account
+        <h1 className="text-4xl font-bold text-center text-slate-800 dark:text-white mb-8">
+          Register
         </h1>
 
         <form
-          onSubmit={
-            handleSubmit
-          }
-          className="mt-10 space-y-6"
+          onSubmit={handleSubmit}
+          className="space-y-6"
         >
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            required
-            value={
-              formData.name
-            }
-            onChange={
-              handleChange
-            }
-            className="w-full bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-          />
+          {/* Name */}
+          <div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            value={
-              formData.email
-            }
-            onChange={
-              handleChange
-            }
-            className="w-full bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-          />
+            <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
+              Name
+            </label>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            value={
-              formData.password
-            }
-            onChange={
-              handleChange
-            }
-            className="w-full bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-          />
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter name"
+              className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-white"
+              required
+            />
+          </div>
 
+          {/* Email */}
+          <div>
+
+            <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
+              Email
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter email"
+              className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-white"
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+
+            <label className="block mb-2 font-medium text-slate-700 dark:text-slate-300">
+              Password
+            </label>
+
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter password"
+              className="w-full border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-white"
+              required
+            />
+          </div>
+
+          {/* Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold transition duration-300"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition duration-300"
           >
             Register
           </button>
         </form>
 
-        <p className="text-center text-slate-500 dark:text-slate-300 mt-8">
+        <p className="mt-6 text-center text-slate-600 dark:text-slate-300">
 
-          Already have account?
+          Already have an account?{" "}
 
           <Link
             to="/login"
-            className="text-blue-600 font-semibold ml-2"
+            className="text-blue-600 font-semibold"
           >
             Login
           </Link>

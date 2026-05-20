@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
 
-// Register
+// REGISTER USER
 export const registerUser =
   async (req, res) => {
 
@@ -15,7 +15,7 @@ export const registerUser =
         password,
       } = req.body;
 
-      // Check User
+      // Check Existing User
       const userExists =
         await User.findOne({
           email,
@@ -48,7 +48,7 @@ export const registerUser =
             hashedPassword,
         });
 
-      // Token
+      // Generate Token
       const token =
         jwt.sign(
           {
@@ -80,7 +80,7 @@ export const registerUser =
     }
   };
 
-// Login
+// LOGIN USER
 export const loginUser =
   async (req, res) => {
 
@@ -120,7 +120,7 @@ export const loginUser =
         });
       }
 
-      // Token
+      // Generate Token
       const token =
         jwt.sign(
           {
@@ -150,4 +150,14 @@ export const loginUser =
           error.message,
       });
     }
+  };
+
+// GET PROFILE
+export const getProfile =
+  async (req, res) => {
+
+    res.status(200).json({
+      success: true,
+      user: req.user,
+    });
   };
