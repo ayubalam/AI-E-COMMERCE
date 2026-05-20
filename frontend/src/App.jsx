@@ -1,42 +1,34 @@
-import { BrowserRouter } from "react-router-dom";
-
 import AppRoutes from "./routes/AppRoutes";
 
 import CartProvider from "./context/CartContext";
 
-import AuthProvider from "./context/AuthProvider";
+import AuthProvider from "./context/AuthContext";
 
 import WishlistProvider from "./context/WishlistContext";
 
 import ThemeProvider from "./context/ThemeContext";
 
-import { Toaster } from "react-hot-toast";
-
 const App = () => {
+
   return (
-    <BrowserRouter>
 
-      <ThemeProvider>
+    <ThemeProvider>
 
-        <AuthProvider>
+      <AuthProvider>
 
-          <CartProvider>
+        <CartProvider>
 
-            <WishlistProvider>
+          <WishlistProvider>
 
-              <Toaster position="top-right" />
+            <AppRoutes />
 
-              <AppRoutes />
+          </WishlistProvider>
 
-            </WishlistProvider>
+        </CartProvider>
 
-          </CartProvider>
+      </AuthProvider>
 
-        </AuthProvider>
-
-      </ThemeProvider>
-
-    </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

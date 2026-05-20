@@ -13,12 +13,12 @@ const productSchema =
         required: true,
       },
 
-      category: {
+      image: {
         type: String,
         required: true,
       },
 
-      image: {
+      category: {
         type: String,
         required: true,
       },
@@ -28,11 +28,9 @@ const productSchema =
         required: true,
       },
 
-      createdBy: {
-        type:
-          mongoose.Schema.Types.ObjectId,
-
-        ref: "User",
+      stock: {
+        type: Number,
+        default: 1,
       },
     },
     {

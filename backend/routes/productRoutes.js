@@ -3,24 +3,32 @@ import express from "express";
 import {
   createProduct,
   getProducts,
+  getProduct,
   deleteProduct,
 } from "../controllers/productController.js";
 
 import {
   protect,
+  adminOnly,
 } from "../middleware/authMiddleware.js";
 
-import adminOnly from "../middleware/adminMiddleware.js";
+const router =
+  express.Router();
 
-const router = express.Router();
 
-// GET PRODUCTS
+// PUBLIC
 router.get(
   "/",
   getProducts
 );
 
-// CREATE PRODUCT
+router.get(
+  "/:id",
+  getProduct
+);
+
+
+// ADMIN
 router.post(
   "/",
   protect,
@@ -28,7 +36,6 @@ router.post(
   createProduct
 );
 
-// DELETE PRODUCT
 router.delete(
   "/:id",
   protect,

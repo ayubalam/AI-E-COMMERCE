@@ -1,29 +1,44 @@
 import express from "express";
+
 import mongoose from "mongoose";
+
 import cors from "cors";
+
 import dotenv from "dotenv";
+
 import authRoutes from "./routes/authRoutes.js";
+
 import productRoutes from "./routes/productRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
+
+// ===============================
 // Middleware
+// ===============================
 app.use(cors());
 
 app.use(express.json());
 
+
+// ===============================
 // Home Route
+// ===============================
 app.get("/", (req, res) => {
 
   res.json({
+    success: true,
     message:
       "AI Ecommerce Backend Running 🚀",
   });
 });
 
+
+// ===============================
 // Test Route
+// ===============================
 app.get("/test", async (req, res) => {
 
   try {
@@ -42,14 +57,16 @@ app.get("/test", async (req, res) => {
         TestSchema
       );
 
-    // Insert Data
+    // Insert Test Data
     const data =
       await TestModel.create({
         name: "AI Ecommerce",
       });
 
-    res.json({
+    res.status(201).json({
       success: true,
+      message:
+        "Test data inserted",
       data,
     });
 
@@ -62,6 +79,10 @@ app.get("/test", async (req, res) => {
   }
 });
 
+
+// ===============================
+// API Routes
+// ===============================
 app.use(
   "/api/auth",
   authRoutes
@@ -72,7 +93,10 @@ app.use(
   productRoutes
 );
 
-// MongoDB Connect
+
+// ===============================
+// MongoDB Connection
+// ===============================
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -82,7 +106,7 @@ mongoose
     );
 
     app.listen(
-      process.env.PORT,
+      process.env.PORT || 5000,
       () => {
 
         console.log(
@@ -92,6 +116,10 @@ mongoose
     );
   })
   .catch((error) => {
+
+    console.log(
+      "MongoDB Connection Error ❌"
+    );
 
     console.log(error);
   });

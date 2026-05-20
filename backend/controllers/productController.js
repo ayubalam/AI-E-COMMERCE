@@ -1,29 +1,16 @@
 import Product from "../models/Product.js";
 
+
 // CREATE PRODUCT
 export const createProduct =
   async (req, res) => {
 
     try {
 
-      const {
-        name,
-        price,
-        category,
-        image,
-        description,
-      } = req.body;
-
       const product =
-        await Product.create({
-          name,
-          price,
-          category,
-          image,
-          description,
-          createdBy:
-            req.user._id,
-        });
+        await Product.create(
+          req.body
+        );
 
       res.status(201).json({
         success: true,
@@ -33,13 +20,15 @@ export const createProduct =
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message:
           error.message,
       });
     }
   };
 
-// GET PRODUCTS
+
+// GET ALL PRODUCTS
 export const getProducts =
   async (req, res) => {
 
@@ -48,7 +37,7 @@ export const getProducts =
       const products =
         await Product.find();
 
-      res.status(200).json({
+      res.json({
         success: true,
         products,
       });
@@ -56,11 +45,50 @@ export const getProducts =
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message:
           error.message,
       });
     }
   };
+
+
+// GET SINGLE PRODUCT
+export const getProduct =
+  async (req, res) => {
+
+    try {
+
+      const product =
+        await Product.findById(
+          req.params.id
+        );
+
+      if (!product) {
+
+        return res
+          .status(404)
+          .json({
+            message:
+              "Product not found",
+          });
+      }
+
+      res.json({
+        success: true,
+        product,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
+  };
+
 
 // DELETE PRODUCT
 export const deleteProduct =
@@ -75,15 +103,17 @@ export const deleteProduct =
 
       if (!product) {
 
-        return res.status(404).json({
-          message:
-            "Product not found",
-        });
+        return res
+          .status(404)
+          .json({
+            message:
+              "Product not found",
+          });
       }
 
       await product.deleteOne();
 
-      res.status(200).json({
+      res.json({
         success: true,
         message:
           "Product deleted",
@@ -92,6 +122,7 @@ export const deleteProduct =
     } catch (error) {
 
       res.status(500).json({
+        success: false,
         message:
           error.message,
       });

@@ -1,115 +1,129 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import ProductCard from "../components/products/ProductCard";
+import {
+  Link,
+} from "react-router-dom";
 
-import SearchBar from "../components/products/SearchBar";
-
-import FilterSidebar from "../components/products/FilterSidebar";
-
-import productsData from "../data/products";
+import {
+  getProducts,
+} from "../services/productService";
 
 const Products = () => {
 
-  const [searchTerm, setSearchTerm] =
-    useState("");
+  const [products,
+    setProducts] =
+    useState([]);
 
-  const [
-    selectedCategory,
-    setSelectedCategory,
-  ] = useState("All");
+  const [loading,
+    setLoading] =
+    useState(true);
 
-  // Filter Products
-  const filteredProducts =
-    productsData.filter((product) => {
+  useEffect(() => {
 
-      // Search Match
-      const matchesSearch =
-        product.name
-          .toLowerCase()
-          .includes(
-            searchTerm.toLowerCase()
-          );
+    const fetchProducts =
+      async () => {
 
-      // Category Match
-      const matchesCategory =
-        selectedCategory === "All" ||
-        product.category ===
-          selectedCategory;
+        try {
 
-      return (
-        matchesSearch &&
-        matchesCategory
-      );
-    });
+          const data =
+            await getProducts();
+
+          setProducts(data);
+
+        } catch (error) {
+
+          console.log(error);
+
+        } finally {
+
+          setLoading(false);
+        }
+      };
+
+    fetchProducts();
+
+  }, []);
+
+  if (loading) {
+
+    return (
+      <div className="min-h-screen flex justify-center items-center text-2xl font-bold">
+        Loading Products...
+      </div>
+    );
+  }
 
   return (
-    <section className="bg-slate-100 dark:bg-slate-950 min-h-screen py-16 transition duration-300">
+    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 px-4 py-10">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto">
 
         {/* Heading */}
-        <div className="mb-12">
+        <div className="mb-10">
 
-          <h1 className="text-5xl font-bold text-slate-800 dark:text-white">
-            Explore Products
+          <h1 className="text-4xl font-bold text-slate-800 dark:text-white">
+            Products
           </h1>
 
-          <p className="text-slate-500 dark:text-slate-300 mt-4 text-lg">
-            Discover smart AI-powered shopping products.
+          <p className="text-slate-500 dark:text-slate-300 mt-2">
+            Explore our latest AI products
           </p>
         </div>
 
-        {/* Search */}
-        <div className="mb-10">
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-          <SearchBar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-        </div>
+          {products.map(
+            (product) => (
 
-        {/* Layout */}
-        <div className="grid lg:grid-cols-4 gap-10">
+              <div
+                key={product._id}
+                className="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden shadow-xl hover:scale-105 transition duration-300"
+              >
 
-          {/* Sidebar */}
-          <div>
+                {/* Image */}
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-60 object-cover"
+                />
 
-            <FilterSidebar
-              selectedCategory={
-                selectedCategory
-              }
-              setSelectedCategory={
-                setSelectedCategory
-              }
-            />
-          </div>
+                {/* Content */}
+                <div className="p-5">
 
-          {/* Products */}
-          <div className="lg:col-span-3">
+                  <span className="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-full">
+                    {product.category}
+                  </span>
 
-            {filteredProducts.length ===
-            0 ? (
+                  <h2 className="text-xl font-bold mt-4 dark:text-white">
+                    {product.name}
+                  </h2>
 
-              <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-lg p-10 text-center text-2xl font-semibold text-slate-500 dark:text-slate-300 transition duration-300">
-                No Products Found
+                  <p className="text-slate-500 dark:text-slate-300 text-sm mt-2 line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  <div className="flex justify-between items-center mt-5">
+
+                    <h3 className="text-2xl font-bold text-blue-600">
+                      ${product.price}
+                    </h3>
+
+                    <Link
+                      to={`/products/${product._id}`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl"
+                    >
+                      View
+                    </Link>
+                  </div>
+
+                </div>
               </div>
-
-            ) : (
-
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-
-                {filteredProducts.map(
-                  (product) => (
-
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                    />
-                  )
-                )}
-              </div>
-            )}
-          </div>
+            )
+          )}
         </div>
       </div>
     </section>
