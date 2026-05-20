@@ -7,32 +7,48 @@ import FilterSidebar from "../components/products/FilterSidebar";
 import productsData from "../data/products";
 
 const Products = () => {
-  const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
 
-  const filteredProducts = productsData.filter((product) => {
-    
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  const [searchTerm, setSearchTerm] =
+    useState("");
 
-    const matchesCategory =
-      selectedCategory === "All" ||
-      product.category === selectedCategory;
+  const [
+    selectedCategory,
+    setSelectedCategory,
+  ] = useState("All");
 
-    return matchesSearch && matchesCategory;
-  });
+  // Filter Products
+  const filteredProducts =
+    productsData.filter((product) => {
+
+      // Search Match
+      const matchesSearch =
+        product.name
+          .toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          );
+
+      // Category Match
+      const matchesCategory =
+        selectedCategory === "All" ||
+        product.category ===
+          selectedCategory;
+
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
+    });
 
   return (
     <section className="bg-slate-100 min-h-screen py-16">
-      
+
       <div className="max-w-7xl mx-auto px-6">
-        
+
         {/* Heading */}
         <div className="mb-12">
-          
-          <h1 className="text-5xl font-bold">
+
+          <h1 className="text-5xl font-bold text-slate-800">
             Explore Products
           </h1>
 
@@ -42,31 +58,55 @@ const Products = () => {
         </div>
 
         {/* Search */}
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-        />
+        <div className="mb-10">
 
-        {/* Content */}
+          <SearchBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </div>
+
+        {/* Layout */}
         <div className="grid lg:grid-cols-4 gap-10">
-          
+
           {/* Sidebar */}
           <div>
+
             <FilterSidebar
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
+              selectedCategory={
+                selectedCategory
+              }
+              setSelectedCategory={
+                setSelectedCategory
+              }
             />
           </div>
 
           {/* Products */}
-          <div className="lg:col-span-3 grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-            
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
-            ))}
+          <div className="lg:col-span-3">
+
+            {filteredProducts.length ===
+            0 ? (
+
+              <div className="bg-white rounded-3xl shadow-lg p-10 text-center text-2xl font-semibold text-slate-500">
+                No Products Found
+              </div>
+
+            ) : (
+
+              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+                {filteredProducts.map(
+                  (product) => (
+
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                    />
+                  )
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
