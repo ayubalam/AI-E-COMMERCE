@@ -8,6 +8,9 @@ import Register from "../pages/Register";
 import ProductDetails from "../pages/ProductDetails";
 import Dashboard from "../pages/Dashboard";
 import Wishlist from "../pages/Wishlist";
+import Checkout from "../pages/Checkout";
+import Success from "../pages/Success";
+
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -24,6 +27,7 @@ const AppRoutes = () => {
           path="/"
           element={<Home />}
         />
+        
 
         <Route
           path="/products"
@@ -53,6 +57,19 @@ const AppRoutes = () => {
           path="/register"
           element={<Register />}
         />
+             <Route
+                path="/checkout"
+                  element={<Checkout />}
+         />
+
+         <Route
+             path="/success"
+             element={<Success />}
+             />
+             <Route
+           path="/wishlist"
+              element={<Wishlist />}
+            />
 
         {/* Protected Dashboard */}
         <Route

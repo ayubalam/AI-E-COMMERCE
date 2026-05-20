@@ -1,7 +1,14 @@
 import { useParams } from "react-router-dom";
+
 import products from "../data/products";
+
 import useCart from "../hooks/useCart";
+
+import useWishlist from "../hooks/useWishlist";
+
 import toast from "react-hot-toast";
+
+import { FaHeart } from "react-icons/fa";
 
 const ProductDetails = () => {
 
@@ -9,98 +16,145 @@ const ProductDetails = () => {
 
   const { addToCart } = useCart();
 
+  const {
+    addToWishlist,
+    wishlistItems,
+  } = useWishlist();
+
   const product = products.find(
     (item) => item.id === Number(id)
   );
 
-  // Product Not Found
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        
-        <h1 className="text-5xl font-bold text-red-500">
-          Product Not Found
-        </h1>
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
+        Product Not Found
       </div>
     );
   }
 
+  const alreadyWishlisted =
+    wishlistItems.some(
+      (item) => item.id === product.id
+    );
+
   return (
-    <section className="min-h-screen bg-slate-100 py-16">
-      
+    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 py-16">
+
       <div className="max-w-7xl mx-auto px-6">
-        
-        <div className="bg-white rounded-3xl shadow-lg overflow-hidden grid md:grid-cols-2 gap-12 p-8 lg:p-12">
-          
+
+        <div className="grid lg:grid-cols-2 gap-14 items-center">
+
           {/* Product Image */}
-          <div className="flex items-center justify-center">
-            
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-lg overflow-hidden">
+
             <img
               src={product.image}
               alt={product.name}
-              className="w-full max-w-lg rounded-3xl object-cover hover:scale-105 transition duration-300"
+              className="w-full h-[500px] object-cover"
             />
           </div>
 
           {/* Product Info */}
-          <div className="flex flex-col justify-center">
-            
-            {/* Category */}
-            <p className="text-blue-600 font-semibold text-lg uppercase tracking-wide">
+          <div>
+
+            <p className="text-blue-600 font-semibold text-lg">
               {product.category}
             </p>
 
-            {/* Product Name */}
-            <h1 className="text-4xl lg:text-5xl font-bold mt-4 text-slate-800">
+            <h1 className="text-5xl font-bold text-slate-800 dark:text-white mt-4">
               {product.name}
             </h1>
 
-            {/* Description */}
-            <p className="text-slate-500 mt-6 leading-relaxed text-lg">
-              Experience premium AI-powered ecommerce products with
-              modern design, high performance, and next-generation
-              technology built for smart shopping experiences.
+            <p className="text-slate-600 dark:text-slate-300 text-lg mt-6 leading-relaxed">
+              Experience premium AI-powered technology
+              with smart features, high performance,
+              and futuristic design.
             </p>
 
-            {/* Price */}
             <div className="mt-8">
-              
-              <span className="text-4xl font-bold text-slate-900">
+
+              <span className="text-4xl font-bold text-slate-900 dark:text-white">
                 ${product.price}
               </span>
             </div>
 
-            {/* Features */}
-            <div className="mt-8 space-y-3 text-slate-600">
-              
-              <p>✅ Premium Quality Product</p>
+            {/* Buttons */}
+            <div className="flex flex-wrap gap-5 mt-10">
 
-              <p>✅ Fast Delivery Available</p>
+              {/* Add To Cart */}
+              <button
+                onClick={() => {
+                  addToCart(product);
 
-              <p>✅ AI Recommended Product</p>
+                  toast.success(
+                    "Added to cart"
+                  );
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
+              >
+                Add To Cart
+              </button>
 
-              <p>✅ Secure Checkout</p>
+              {/* Wishlist */}
+              <button
+                onClick={() => {
+                  addToWishlist(product);
+
+                  toast.success(
+                    "Added to wishlist"
+                  );
+                }}
+                disabled={alreadyWishlisted}
+                className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-semibold transition
+                  
+                  ${
+                    alreadyWishlisted
+                      ? "bg-pink-200 text-pink-700 cursor-not-allowed"
+                      : "bg-pink-500 hover:bg-pink-600 text-white"
+                  }
+                `}
+              >
+                <FaHeart />
+
+                {alreadyWishlisted
+                  ? "Wishlisted"
+                  : "Add Wishlist"}
+              </button>
             </div>
 
-            {/* Buttons */}
-            <div className="mt-10 flex flex-wrap gap-5">
-                        <button
-  onClick={() => {
-    addToCart(product);
-    toast.success("Product added to cart");
-  }}
-  className="mt-10 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
->
-  Add To Cart
-</button>
-                
-              
-             
-             
+            {/* Extra Info */}
+            <div className="mt-12 grid sm:grid-cols-3 gap-5">
 
-              <button className="border border-slate-300 hover:bg-slate-100 px-8 py-4 rounded-2xl text-lg font-semibold transition">
-                Buy Now
-              </button>
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
+                <h3 className="font-bold text-lg dark:text-white">
+                  Free Shipping
+                </h3>
+
+                <p className="text-slate-500 mt-2">
+                  Delivery within 3-5 days
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
+                <h3 className="font-bold text-lg dark:text-white">
+                  Warranty
+                </h3>
+
+                <p className="text-slate-500 mt-2">
+                  1 Year Official Warranty
+                </p>
+              </div>
+
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
+                <h3 className="font-bold text-lg dark:text-white">
+                  Secure Payment
+                </h3>
+
+                <p className="text-slate-500 mt-2">
+                  100% secure transactions
+                </p>
+              </div>
             </div>
           </div>
         </div>
