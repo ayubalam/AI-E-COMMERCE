@@ -9,34 +9,22 @@ const CartProvider = ({
   children,
 }) => {
 
+  // LOAD DIRECTLY
   const [cartItems,
     setCartItems] =
-    useState([]);
+    useState(() => {
 
-  // LOAD CART
-  useEffect(() => {
-
-    const storedCart =
-      localStorage.getItem(
-        "cartItems"
-      );
-
-    if (storedCart) {
-
-      const parsedCart =
-        JSON.parse(
-          storedCart
+      const storedCart =
+        localStorage.getItem(
+          "cartItems"
         );
 
-      Promise.resolve().then(() => {
-
-        setCartItems(
-          parsedCart
-        );
-      });
-    }
-
-  }, []);
+      return storedCart
+        ? JSON.parse(
+            storedCart
+          )
+        : [];
+    });
 
   // SAVE CART
   useEffect(() => {
@@ -61,6 +49,7 @@ const CartProvider = ({
             product._id
         );
 
+      // EXISTS
       if (existing) {
 
         const updatedCart =
@@ -82,6 +71,7 @@ const CartProvider = ({
 
       } else {
 
+        // NEW PRODUCT
         setCartItems([
           ...cartItems,
           {
@@ -102,7 +92,7 @@ const CartProvider = ({
             item._id === id
         );
 
-      // REMOVE IF QTY = 1
+      // REMOVE IF 1
       if (
         existing.qty === 1
       ) {
@@ -152,6 +142,13 @@ const CartProvider = ({
       );
     };
 
+  // CLEAR CART
+  const clearCart =
+    () => {
+
+      setCartItems([]);
+    };
+
   return (
     <CartContext.Provider
       value={{
@@ -159,6 +156,7 @@ const CartProvider = ({
         addToCart,
         decreaseQty,
         removeFromCart,
+        clearCart,
       }}
     >
       {children}

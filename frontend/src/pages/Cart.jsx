@@ -1,4 +1,8 @@
 import {
+  Link,
+} from "react-router-dom";
+
+import {
   FaTrash,
   FaPlus,
   FaMinus,
@@ -13,9 +17,10 @@ const Cart = () => {
     removeFromCart,
     addToCart,
     decreaseQty,
+    clearCart,
   } = useCart();
 
-  // TOTAL
+  // TOTAL PRICE
   const totalPrice =
     cartItems.reduce(
       (acc, item) =>
@@ -25,7 +30,7 @@ const Cart = () => {
       0
     );
 
-  // EMPTY
+  // EMPTY CART
   if (
     cartItems.length === 0
   ) {
@@ -53,22 +58,35 @@ const Cart = () => {
 
       <div className="max-w-7xl mx-auto">
 
-        {/* Heading */}
-        <div className="mb-10">
+        {/* HEADING */}
+        <div className="flex items-center justify-between mb-10">
 
-          <h1 className="text-5xl font-bold dark:text-white">
-            Shopping Cart
-          </h1>
+          <div>
 
-          <p className="text-slate-500 dark:text-slate-300 mt-3">
-            Manage your products
-          </p>
+            <h1 className="text-5xl font-bold dark:text-white">
+              Shopping Cart
+            </h1>
 
+            <p className="text-slate-500 dark:text-slate-300 mt-3">
+              Manage your products
+            </p>
+
+          </div>
+
+          {/* CLEAR CART */}
+          <button
+            onClick={clearCart}
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-2xl font-semibold transition duration-300"
+          >
+
+            Clear Cart
+
+          </button>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
 
-          {/* LEFT */}
+          {/* LEFT SIDE */}
           <div className="lg:col-span-2 space-y-6">
 
             {cartItems.map(
@@ -102,7 +120,7 @@ const Cart = () => {
                       {item.price}
                     </h3>
 
-                    {/* QTY */}
+                    {/* QUANTITY */}
                     <div className="flex items-center gap-4 mt-5">
 
                       {/* PLUS */}
@@ -114,7 +132,9 @@ const Cart = () => {
                           )
                         }
                       >
+
                         <FaPlus />
+
                       </button>
 
                       {/* QTY */}
@@ -131,7 +151,9 @@ const Cart = () => {
                           )
                         }
                       >
+
                         <FaMinus />
+
                       </button>
 
                       {/* DELETE */}
@@ -143,7 +165,9 @@ const Cart = () => {
                           )
                         }
                       >
+
                         <FaTrash />
+
                       </button>
 
                     </div>
@@ -153,7 +177,7 @@ const Cart = () => {
             )}
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT SIDE */}
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 h-fit">
 
             <h2 className="text-3xl font-bold dark:text-white mb-8">
@@ -162,6 +186,7 @@ const Cart = () => {
 
             <div className="space-y-5">
 
+              {/* ITEMS */}
               <div className="flex justify-between text-lg dark:text-white">
 
                 <span>
@@ -174,6 +199,7 @@ const Cart = () => {
 
               </div>
 
+              {/* TOTAL */}
               <div className="flex justify-between text-lg dark:text-white">
 
                 <span>
@@ -190,11 +216,16 @@ const Cart = () => {
               </div>
             </div>
 
-            <button className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-lg transition duration-300">
+            {/* CHECKOUT */}
+            <Link
+              to="/checkout"
+              className="block w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-lg text-center transition duration-300"
+            >
 
               Checkout
 
-            </button>
+            </Link>
+
           </div>
         </div>
       </div>

@@ -29,6 +29,8 @@ import AdminProducts from "../pages/admin/AdminProducts";
 
 import EditProduct from "../pages/admin/EditProduct";
 
+import Checkout from "../pages/Checkout";
+
 const AppRoutes = () => {
 
   return (
@@ -82,7 +84,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
          }
         />
-
+             <Route
+          path="/checkout"
+          element={
+          <ProtectedRoute>
+             <Checkout />
+           </ProtectedRoute>
+                 }
+        />
         <Route
           path="/admin/edit-product/:id"
         element={

@@ -1,286 +1,219 @@
-import { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-
-import useCart from "../hooks/useCart";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import toast from "react-hot-toast";
 
-import {
-  FaCreditCard,
-  FaLock,
-  FaTruck,
-} from "react-icons/fa";
+import useCart from "../hooks/useCart";
 
 const Checkout = () => {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const {
     cartItems,
-    totalPrice,
+    clearCart,
   } = useCart();
 
-  const [formData, setFormData] =
-    useState({
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      zip: "",
-    });
-
-  // Handle Input
-  const handleChange = (e) => {
-
-    setFormData({
-      ...formData,
-      [e.target.name]:
-        e.target.value,
-    });
-  };
-
-  // Place Order
-  const handleSubmit = (e) => {
-
-    e.preventDefault();
-
-    toast.success(
-      "Order Placed Successfully 🚀"
+  // TOTAL
+  const totalPrice =
+    cartItems.reduce(
+      (acc, item) =>
+        acc +
+        item.price *
+          item.qty,
+      0
     );
 
-    // Redirect
-    navigate("/success");
-  };
+  // PLACE ORDER
+  const handleOrder =
+    () => {
 
-  return (
-    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 py-16 transition duration-300">
+      toast.success(
+        "Order Placed Successfully 🚀"
+      );
 
-      <div className="max-w-7xl mx-auto px-6">
+      clearCart();
 
-        {/* Heading */}
-        <div className="mb-12">
+      navigate(
+        "/dashboard"
+      );
+    };
 
-          <h1 className="text-5xl font-bold text-slate-800 dark:text-white">
-            Checkout
+  // EMPTY CART
+  if (
+    cartItems.length === 0
+  ) {
+
+    return (
+      <section className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center px-4">
+
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl p-10 text-center max-w-lg w-full">
+
+          <h1 className="text-4xl font-bold dark:text-white">
+
+            Cart is Empty
+
           </h1>
 
-          <p className="text-slate-500 dark:text-slate-300 mt-4 text-lg">
-            Complete your order details securely.
+          <p className="text-slate-500 dark:text-slate-300 mt-4">
+
+            Add products before checkout
+
           </p>
+
+        </div>
+
+      </section>
+    );
+  }
+
+  return (
+    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 px-4 py-10">
+
+      <div className="max-w-6xl mx-auto">
+
+        {/* TOP */}
+        <div className="mb-10">
+
+          <h1 className="text-5xl font-bold dark:text-white">
+
+            Checkout
+
+          </h1>
+
+          <p className="text-slate-500 dark:text-slate-300 mt-3">
+
+            Complete your order
+
+          </p>
+
         </div>
 
         <div className="grid lg:grid-cols-3 gap-10">
 
-          {/* Billing Form */}
-          <div className="lg:col-span-2">
+          {/* LEFT */}
+          <div className="lg:col-span-2 space-y-6">
 
-            <form
-              onSubmit={handleSubmit}
-              className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 transition duration-300"
+            {cartItems.map(
+              (item) => (
+
+                <div
+                  key={item._id}
+                  className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-5 flex flex-col md:flex-row gap-5"
+                >
+
+                  {/* IMAGE */}
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full md:w-40 h-40 object-cover rounded-2xl"
+                  />
+
+                  {/* CONTENT */}
+                  <div className="flex-1">
+
+                    <h2 className="text-3xl font-bold dark:text-white">
+
+                      {item.name}
+
+                    </h2>
+
+                    <p className="text-slate-500 dark:text-slate-300 mt-3">
+
+                      {item.category}
+
+                    </p>
+
+                    <h3 className="text-4xl font-bold text-blue-600 mt-5">
+
+                      ${item.price}
+
+                    </h3>
+
+                    <p className="mt-4 text-lg dark:text-white">
+
+                      Quantity:
+                      {" "}
+                      <span className="font-bold">
+
+                        {item.qty}
+
+                      </span>
+
+                    </p>
+
+                  </div>
+
+                </div>
+              )
+            )}
+
+          </div>
+
+          {/* RIGHT */}
+          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 h-fit">
+
+            <h2 className="text-4xl font-bold dark:text-white mb-8">
+
+              Order Summary
+
+            </h2>
+
+            <div className="space-y-5">
+
+              <div className="flex justify-between text-lg dark:text-white">
+
+                <span>
+                  Products
+                </span>
+
+                <span>
+                  {
+                    cartItems.length
+                  }
+                </span>
+
+              </div>
+
+              <div className="flex justify-between text-lg dark:text-white">
+
+                <span>
+                  Total Price
+                </span>
+
+                <span className="font-bold text-blue-600">
+
+                  $
+                  {totalPrice.toFixed(
+                    2
+                  )}
+
+                </span>
+
+              </div>
+
+            </div>
+
+            {/* BUTTON */}
+            <button
+              onClick={
+                handleOrder
+              }
+              className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold text-lg transition duration-300"
             >
 
-              <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-8">
-                Billing Information
-              </h2>
+              Place Order
 
-              <div className="grid md:grid-cols-2 gap-6">
+            </button>
 
-                {/* Name */}
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-
-                {/* Email */}
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-
-                {/* Phone */}
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-
-                {/* City */}
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="City"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                  className="bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-
-                {/* ZIP */}
-                <input
-                  type="text"
-                  name="zip"
-                  placeholder="ZIP Code"
-                  value={formData.zip}
-                  onChange={handleChange}
-                  required
-                  className="bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-
-                {/* Address */}
-                <textarea
-                  name="address"
-                  placeholder="Full Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  rows="5"
-                  className="md:col-span-2 bg-slate-100 dark:bg-slate-700 dark:text-white p-4 rounded-2xl outline-none"
-                />
-              </div>
-
-              {/* Payment Info */}
-              <div className="mt-10 bg-slate-100 dark:bg-slate-700 rounded-2xl p-6">
-
-                <div className="flex items-center gap-3">
-
-                  <FaCreditCard className="text-blue-600 text-2xl" />
-
-                  <h3 className="text-2xl font-bold text-slate-800 dark:text-white">
-                    Payment Method
-                  </h3>
-                </div>
-
-                <p className="text-slate-500 dark:text-slate-300 mt-4">
-                  Secure online payment integration
-                  coming soon with Stripe/Razorpay.
-                </p>
-
-                <div className="flex items-center gap-3 mt-5 text-green-600 font-semibold">
-
-                  <FaLock />
-
-                  Secure Checkout
-                </div>
-              </div>
-
-              {/* Place Order Button */}
-              <button
-                type="submit"
-                className="w-full mt-10 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl text-lg font-semibold transition duration-300"
-              >
-                Place Order
-              </button>
-            </form>
           </div>
 
-          {/* Order Summary */}
-          <div>
-
-            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 sticky top-28 transition duration-300">
-
-              <h2 className="text-3xl font-bold text-slate-800 dark:text-white">
-                Order Summary
-              </h2>
-
-              {/* Items */}
-              <div className="mt-8 space-y-5">
-
-                {cartItems.map((item) => (
-
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-4"
-                  >
-
-                    {/* Product Image */}
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-20 h-20 rounded-xl object-cover"
-                    />
-
-                    {/* Product Info */}
-                    <div className="flex-1">
-
-                      <h3 className="font-bold dark:text-white">
-                        {item.name}
-                      </h3>
-
-                      <p className="text-slate-500 dark:text-slate-300">
-                        Qty: {item.quantity}
-                      </p>
-                    </div>
-
-                    {/* Price */}
-                    <span className="font-bold dark:text-white">
-                      $
-                      {item.price *
-                        item.quantity}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Shipping */}
-              <div className="flex justify-between mt-8">
-
-                <span className="dark:text-slate-300">
-                  Shipping
-                </span>
-
-                <span className="text-green-600 font-bold flex items-center gap-2">
-                  <FaTruck />
-
-                  Free
-                </span>
-              </div>
-
-              {/* Tax */}
-              <div className="flex justify-between mt-5">
-
-                <span className="dark:text-slate-300">
-                  Tax
-                </span>
-
-                <span className="font-bold dark:text-white">
-                  $20
-                </span>
-              </div>
-
-              {/* Divider */}
-              <div className="border-t dark:border-slate-700 my-8"></div>
-
-              {/* Total */}
-              <div className="flex justify-between items-center">
-
-                <span className="text-2xl font-bold dark:text-white">
-                  Total
-                </span>
-
-                <span className="text-3xl font-bold text-blue-600">
-                  ${totalPrice + 20}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
+
       </div>
+
     </section>
   );
 };
