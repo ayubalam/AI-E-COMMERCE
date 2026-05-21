@@ -4,31 +4,42 @@ import {
   registerUser,
   loginUser,
   getProfile,
+  getAdminStats,
 } from "../controllers/authController.js";
 
 import {
   protect,
+  adminOnly,
 } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router =
+  express.Router();
 
-// Register
+// REGISTER
 router.post(
   "/register",
   registerUser
 );
 
-// Login
+// LOGIN
 router.post(
   "/login",
   loginUser
 );
 
-// Profile
+// PROFILE
 router.get(
   "/profile",
   protect,
   getProfile
+);
+
+// ADMIN ANALYTICS
+router.get(
+  "/admin/stats",
+  protect,
+  adminOnly,
+  getAdminStats
 );
 
 export default router;

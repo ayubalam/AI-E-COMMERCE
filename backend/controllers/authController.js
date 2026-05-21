@@ -2,6 +2,59 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
+import Product from "../models/Product.js";
+import Order from "../models/Order.js";
+
+// ADMIN STATS
+export const getAdminStats =
+  async (req, res) => {
+
+    try {
+
+      // TOTAL USERS
+      const totalUsers =
+        await User.countDocuments();
+
+      // TOTAL PRODUCTS
+      const totalProducts =
+        await Product.countDocuments();
+
+      // TOTAL ORDERS
+      const totalOrders =
+        await Order.countDocuments();
+
+      // ALL ORDERS
+      const orders =
+        await Order.find();
+
+      // TOTAL REVENUE
+      const totalRevenue =
+        orders.reduce(
+          (acc, item) =>
+            acc +
+            item.totalPrice,
+          0
+        );
+
+      res.json({
+
+        totalUsers,
+
+        totalProducts,
+
+        totalOrders,
+
+        totalRevenue,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        message:
+          error.message,
+      });
+    }
+  };
 
 // REGISTER USER
 export const registerUser =
