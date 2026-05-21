@@ -160,26 +160,39 @@ const MyOrders = () => {
 
                       <div>
 
-                        <p className="text-slate-500 dark:text-slate-300">
-                          Status
-                        </p>
+  <p className="text-slate-500 dark:text-slate-300">
+    Status
+  </p>
 
-                        <h3
-                          className={`font-bold ${
-                            order.isDelivered
-                              ? "text-green-500"
-                              : "text-yellow-500"
-                          }`}
-                        >
+  <h3
+    className={`font-bold
 
-                          {order.isDelivered
-                            ? "Delivered"
-                            : "Pending"}
+      ${
+        order.orderStatus ===
+        "Delivered"
 
-                        </h3>
+          ? "text-green-500"
 
-                      </div>
+          : order.orderStatus ===
+            "Shipped"
 
+          ? "text-purple-500"
+
+          : order.orderStatus ===
+            "Processing"
+
+          ? "text-yellow-500"
+
+          : "text-blue-500"
+      }
+    `}
+  >
+
+    {order.orderStatus}
+
+  </h3>
+
+</div>
                     </div>
 
                   </div>

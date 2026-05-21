@@ -6,44 +6,44 @@ export const createOrder =
 
     try {
 
-     const {
+      const {
 
-  orderItems,
+        orderItems,
 
-  shippingInfo,
+        shippingInfo,
 
-  paymentMethod,
+        paymentMethod,
 
-  totalPrice,
+        totalPrice,
 
-  isPaid,
+        isPaid,
 
-  paidAt,
+        paidAt,
 
-  paymentResult,
+        paymentResult,
 
-} = req.body;
+      } = req.body;
 
-     const order =
-  await Order.create({
+      const order =
+        await Order.create({
 
-    user:
-      req.user._id,
+          user:
+            req.user._id,
 
-    orderItems,
+          orderItems,
 
-    shippingInfo,
+          shippingInfo,
 
-    paymentMethod,
+          paymentMethod,
 
-    totalPrice,
+          totalPrice,
 
-    isPaid,
+          isPaid,
 
-    paidAt,
+          paidAt,
 
-    paymentResult,
-  });
+          paymentResult,
+        });
 
       res.status(201).json({
         success: true,
@@ -115,6 +115,60 @@ export const getAllOrders =
     }
   };
 
+// UPDATE ORDER STATUS
+export const updateOrderStatus =
+  async (req, res) => {
+
+    try {
+
+      const order =
+        await Order.findById(
+          req.params.id
+        );
+
+      if (!order) {
+
+        return res.status(404).json({
+          message:
+            "Order not found",
+        });
+      }
+
+      // UPDATE STATUS
+      order.orderStatus =
+        req.body.status;
+
+      // DELIVERED
+      if (
+        req.body.status ===
+        "Delivered"
+      ) {
+
+        order.isDelivered =
+          true;
+
+        order.deliveredAt =
+          Date.now();
+      }
+
+      await order.save();
+
+      res.json({
+        success: true,
+        message:
+          "Order Status Updated",
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
+  };
+
 // MARK DELIVERED
 export const markDelivered =
   async (req, res) => {
@@ -135,6 +189,9 @@ export const markDelivered =
               "Order not found",
           });
       }
+
+      order.orderStatus =
+        "Delivered";
 
       order.isDelivered =
         true;

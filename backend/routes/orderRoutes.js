@@ -5,6 +5,7 @@ import {
   getMyOrders,
   getAllOrders,
   markDelivered,
+  updateOrderStatus,
 } from "../controllers/orderController.js";
 
 import {
@@ -35,6 +36,14 @@ router.get(
   protect,
   adminOnly,
   getAllOrders
+);
+
+// UPDATE STATUS
+router.put(
+  "/:id/status",
+  protect,
+  adminOnly,
+  updateOrderStatus
 );
 
 // MARK DELIVERED

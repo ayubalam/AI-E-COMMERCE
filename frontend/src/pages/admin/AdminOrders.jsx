@@ -96,6 +96,51 @@ const AdminOrders = () => {
       }
     };
 
+  // UPDATE STATUS
+  const handleStatusUpdate =
+    async (
+      id,
+      status
+    ) => {
+
+      try {
+
+        await fetch(
+          `http://localhost:5000/api/orders/${id}/status`,
+          {
+            method: "PUT",
+
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              Authorization:
+                `Bearer ${token}`,
+            },
+
+            body: JSON.stringify({
+              status,
+            }),
+          }
+        );
+
+        toast.success(
+          "Status Updated"
+        );
+
+        fetchOrders();
+
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          "Update Failed"
+        );
+      }
+    };
+
   // LOADING
   if (loading) {
 
@@ -155,6 +200,7 @@ const AdminOrders = () => {
 
                   <div className="flex gap-6 flex-wrap">
 
+                    {/* PAYMENT */}
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
@@ -167,6 +213,7 @@ const AdminOrders = () => {
 
                     </div>
 
+                    {/* TOTAL */}
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
@@ -179,25 +226,45 @@ const AdminOrders = () => {
 
                     </div>
 
+                    {/* STATUS */}
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
                         Status
                       </p>
 
-                      <h3
-                        className={`font-bold ${
-                          order.isDelivered
-                            ? "text-green-500"
-                            : "text-yellow-500"
-                        }`}
+                      <select
+                        value={
+                          order.orderStatus
+                        }
+
+                        onChange={(e) =>
+                          handleStatusUpdate(
+                            order._id,
+                            e.target.value
+                          )
+                        }
+
+                        className="border border-slate-300 rounded-xl px-3 py-2 dark:bg-slate-700 dark:text-white"
                       >
 
-                        {order.isDelivered
-                          ? "Delivered"
-                          : "Pending"}
+                        <option>
+                          Paid
+                        </option>
 
-                      </h3>
+                        <option>
+                          Processing
+                        </option>
+
+                        <option>
+                          Shipped
+                        </option>
+
+                        <option>
+                          Delivered
+                        </option>
+
+                      </select>
 
                     </div>
 
