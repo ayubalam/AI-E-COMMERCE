@@ -18,6 +18,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 
 import paymentRoutes from "./routes/paymentRoutes.js";
 
+import couponRoutes from "./routes/couponRoutes.js";
+
 
 
 const app = express();
@@ -111,6 +113,12 @@ app.use(
   "/api/payments",
   paymentRoutes
 );
+
+app.use(
+  "/api/coupons",
+  couponRoutes
+);
+
 // ===============================
 // MongoDB Connection
 // ===============================

@@ -33,6 +33,32 @@ const Checkout = () => {
         "Razorpay",
     });
 
+  // COUPON
+  const [couponCode,
+    setCouponCode] =
+    useState("");
+
+  const [discount,
+    setDiscount] =
+    useState(0);
+
+  // TOTAL
+  const totalPrice =
+    cartItems.reduce(
+      (acc, item) =>
+        acc +
+        item.price *
+          item.qty,
+      0
+    );
+
+  // FINAL PRICE
+  const [finalPrice,
+    setFinalPrice] =
+    useState(
+      totalPrice
+    );
+
   // HANDLE CHANGE
   const handleChange =
     (e) => {
@@ -44,15 +70,70 @@ const Checkout = () => {
       });
     };
 
-  // TOTAL
-  const totalPrice =
-    cartItems.reduce(
-      (acc, item) =>
-        acc +
-        item.price *
-          item.qty,
-      0
-    );
+  // APPLY COUPON
+  const applyCoupon =
+    async () => {
+
+      try {
+
+        const response =
+          await fetch(
+            "http://localhost:5000/api/coupons/apply",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body:
+                JSON.stringify({
+
+                  code:
+                    couponCode,
+
+                  totalAmount:
+                    totalPrice,
+                }),
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if (
+          data.success
+        ) {
+
+          setDiscount(
+            data.discount
+          );
+
+          setFinalPrice(
+            data.finalAmount
+          );
+
+          toast.success(
+            "Coupon Applied"
+          );
+
+        } else {
+
+          toast.error(
+            data.message
+          );
+        }
+
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          "Coupon Failed"
+        );
+      }
+    };
 
   // PLACE ORDER
   const handleOrder =
@@ -74,10 +155,10 @@ const Checkout = () => {
 
       try {
 
-        // CREATE ORDER
+        // CREATE PAYMENT ORDER
         const order =
           await checkoutPayment(
-            totalPrice
+            finalPrice
           );
 
         // RAZORPAY OPTIONS
@@ -102,142 +183,142 @@ const Checkout = () => {
           order_id:
             order.id,
 
-handler:
-  async function (
-    response
-  ) {
+          handler:
+            async function (
+              response
+            ) {
 
-    try {
+              try {
 
-      // VERIFY PAYMENT
-      const verify =
-        await verifyPayment({
-          razorpay_order_id:
-            response
-              .razorpay_order_id,
+                // VERIFY PAYMENT
+                const verify =
+                  await verifyPayment({
+                    razorpay_order_id:
+                      response
+                        .razorpay_order_id,
 
-          razorpay_payment_id:
-            response
-              .razorpay_payment_id,
+                    razorpay_payment_id:
+                      response
+                        .razorpay_payment_id,
 
-          razorpay_signature:
-            response
-              .razorpay_signature,
-        });
+                    razorpay_signature:
+                      response
+                        .razorpay_signature,
+                  });
 
-      // CHECK VERIFIED
-      if (
-        verify.success
-      ) {
+                // PAYMENT VERIFIED
+                if (
+                  verify.success
+                ) {
 
-        // ORDER DATA
-      const orderData = {
+                  const orderData = {
 
-  orderItems:
-    cartItems,
+                    orderItems:
+                      cartItems,
 
- shippingInfo: {
+                    shippingInfo: {
 
-  name:
-    formData.name,
+                      name:
+                        formData.name,
 
-  email:
-    formData.email,
+                      email:
+                        formData.email,
 
-  address:
-    formData.address,
+                      address:
+                        formData.address,
 
-  city:
-    formData.city,
+                      city:
+                        formData.city,
 
-  country:
-    formData.country,
-},
-  paymentMethod:
-    "Razorpay",
+                      country:
+                        formData.country,
+                    },
 
-  totalPrice,
+                    paymentMethod:
+                      "Razorpay",
 
-  // PAYMENT STATUS
-  isPaid: true,
+                    totalPrice:
+                      finalPrice,
 
-  paidAt:
-    new Date(),
+                    isPaid: true,
 
-  paymentResult: {
+                    paidAt:
+                      new Date(),
 
-    id:
-      response
-        .razorpay_payment_id,
+                    paymentResult: {
 
-    status:
-      "Paid",
+                      id:
+                        response
+                          .razorpay_payment_id,
 
-    update_time:
-      new Date(),
+                      status:
+                        "Paid",
 
-    email_address:
-      formData.email,
-  },
-};
+                      update_time:
+                        new Date(),
 
-        // TOKEN
-        const token =
-          localStorage.getItem(
-            "token"
-          );
+                      email_address:
+                        formData.email,
+                    },
+                  };
 
-        // SAVE ORDER
-        await fetch(
-          "http://localhost:5000/api/orders",
-          {
-            method: "POST",
+                  // TOKEN
+                  const token =
+                    localStorage.getItem(
+                      "token"
+                    );
 
-            headers: {
+                  // SAVE ORDER
+                  await fetch(
+                    "http://localhost:5000/api/orders",
+                    {
+                      method: "POST",
 
-              "Content-Type":
-                "application/json",
+                      headers: {
 
-              Authorization:
-                `Bearer ${token}`,
+                        "Content-Type":
+                          "application/json",
+
+                        Authorization:
+                          `Bearer ${token}`,
+                      },
+
+                      body:
+                        JSON.stringify(
+                          orderData
+                        ),
+                    }
+                  );
+
+                  // CLEAR CART
+                  localStorage.removeItem(
+                    "cartItems"
+                  );
+
+                  toast.success(
+                    "Payment Verified"
+                  );
+
+                  // REDIRECT
+                  window.location.href =
+                    "/success";
+
+                } else {
+
+                  toast.error(
+                    "Payment Verification Failed"
+                  );
+                }
+
+              } catch (error) {
+
+                console.log(error);
+
+                toast.error(
+                  "Verification Failed"
+                );
+              }
             },
-
-            body:
-              JSON.stringify(
-                orderData
-              ),
-          }
-        );
-
-        // CLEAR CART
-        localStorage.removeItem(
-          "cartItems"
-        );
-
-        toast.success(
-          "Payment Verified"
-        );
-
-        // REDIRECT
-        window.location.href =
-          "/success";
-
-      } else {
-
-        toast.error(
-          "Payment Verification Failed"
-        );
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-      toast.error(
-        "Verification Failed"
-      );
-    }
-  },
 
           prefill: {
 
@@ -254,7 +335,7 @@ handler:
           },
         };
 
-        // OPEN RAZORPAY
+        // OPEN PAYMENT
         const paymentObject =
           new window.Razorpay(
             options
@@ -491,6 +572,61 @@ handler:
                 )
               )}
 
+              {/* COUPON */}
+              <div className="border-t pt-5">
+
+                <label className="block font-semibold mb-3 dark:text-white">
+                  Coupon Code
+                </label>
+
+                <div className="flex gap-3">
+
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) =>
+                      setCouponCode(
+                        e.target.value
+                      )
+                    }
+                    placeholder="Enter coupon"
+                    className="flex-1 border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-3 outline-none"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={
+                      applyCoupon
+                    }
+                    className="bg-green-600 hover:bg-green-700 text-white px-5 rounded-2xl font-semibold"
+                  >
+
+                    Apply
+
+                  </button>
+
+                </div>
+
+              </div>
+
+              {/* DISCOUNT */}
+              <div className="flex justify-between dark:text-white">
+
+                <span>
+                  Discount
+                </span>
+
+                <span className="text-green-500">
+
+                  -₹
+                  {discount.toFixed(
+                    2
+                  )}
+
+                </span>
+
+              </div>
+
               {/* TOTAL */}
               <div className="border-t pt-5 flex justify-between text-xl font-bold dark:text-white">
 
@@ -500,7 +636,7 @@ handler:
 
                 <span className="text-blue-600">
                   ₹
-                  {totalPrice.toFixed(
+                  {finalPrice.toFixed(
                     2
                   )}
                 </span>
