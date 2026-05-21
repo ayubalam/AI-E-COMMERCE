@@ -6,6 +6,7 @@ import {
   getProduct,
   deleteProduct,
   updateProduct,
+  createReview,
 } from "../controllers/productController.js";
 
 import {
@@ -26,6 +27,14 @@ router.get(
 router.get(
   "/:id",
   getProduct
+);
+
+
+// REVIEW
+router.post(
+  "/:id/review",
+  protect,
+  createReview
 );
 
 

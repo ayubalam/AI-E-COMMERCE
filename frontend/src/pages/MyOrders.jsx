@@ -5,6 +5,8 @@ import {
 
 import toast from "react-hot-toast";
 
+import jsPDF from "jspdf";
+
 import {
   getMyOrders,
 } from "../services/orderService";
@@ -56,6 +58,144 @@ const MyOrders = () => {
     fetchOrders();
 
   }, []);
+
+  // DOWNLOAD INVOICE
+  const downloadInvoice =
+    (order) => {
+
+      const doc =
+        new jsPDF();
+
+      // TITLE
+      doc.setFontSize(22);
+
+      doc.text(
+        "AI Smart Commerce Invoice",
+        20,
+        20
+      );
+
+      // ORDER INFO
+      doc.setFontSize(14);
+
+      doc.text(
+        `Order ID: ${order._id}`,
+        20,
+        40
+      );
+
+      doc.text(
+        `Customer Name: ${
+          order.shippingInfo?.name ||
+          "N/A"
+        }`,
+        20,
+        50
+      );
+
+      doc.text(
+        `Customer Email: ${
+          order.shippingInfo?.email ||
+          "N/A"
+        }`,
+        20,
+        60
+      );
+
+      doc.text(
+        `Payment Method: ${order.paymentMethod}`,
+        20,
+        70
+      );
+
+      doc.text(
+        `Order Status: ${order.orderStatus}`,
+        20,
+        80
+      );
+
+      doc.text(
+        `Tracking Number: ${
+          order.trackingNumber ||
+          "N/A"
+        }`,
+        20,
+        90
+      );
+
+      doc.text(
+        `Courier Service: ${
+          order.courierService ||
+          "N/A"
+        }`,
+        20,
+        100
+      );
+
+      doc.text(
+        `Total Amount: $${order.totalPrice}`,
+        20,
+        110
+      );
+
+      // PRODUCTS
+      let y = 130;
+
+      doc.setFontSize(18);
+
+      doc.text(
+        "Products",
+        20,
+        y
+      );
+
+      y += 15;
+
+      order.orderItems.forEach(
+        (item, index) => {
+
+          doc.setFontSize(13);
+
+          doc.text(
+            `${index + 1}. ${item.name}`,
+            20,
+            y
+          );
+
+          y += 10;
+
+          doc.text(
+            `Quantity: ${item.qty}`,
+            30,
+            y
+          );
+
+          y += 10;
+
+          doc.text(
+            `Price: $${item.price}`,
+            30,
+            y
+          );
+
+          y += 15;
+        }
+      );
+
+      // FOOTER
+      doc.setFontSize(12);
+
+      doc.text(
+        "Thank you for shopping with AI Smart Commerce!",
+        20,
+        y + 10
+      );
+
+      // SAVE PDF
+      doc.save(
+        `invoice_${order._id}.pdf`
+      );
+    };
 
   // LOADING
   if (loading) {
@@ -275,6 +415,20 @@ const MyOrders = () => {
                         </div>
                       )
                     )}
+
+                    {/* DOWNLOAD BUTTON */}
+                    <button
+                      onClick={() =>
+                        downloadInvoice(
+                          order
+                        )
+                      }
+                      className="mt-5 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold transition"
+                    >
+
+                      Download Invoice
+
+                    </button>
 
                   </div>
 

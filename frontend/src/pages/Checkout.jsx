@@ -136,18 +136,23 @@ handler:
   orderItems:
     cartItems,
 
-  shippingInfo: {
+ shippingInfo: {
 
-    address:
-      formData.address,
+  name:
+    formData.name,
 
-    city:
-      formData.city,
+  email:
+    formData.email,
 
-    country:
-      formData.country,
-  },
+  address:
+    formData.address,
 
+  city:
+    formData.city,
+
+  country:
+    formData.country,
+},
   paymentMethod:
     "Razorpay",
 
