@@ -281,7 +281,7 @@ const AdminOrders = () => {
 
                 </div>
 
-                {/* TRACKING */}
+                {/* ADMIN INPUTS */}
                 <div className="px-6 pt-5 flex flex-col md:flex-row gap-4">
 
                   <input

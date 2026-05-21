@@ -95,13 +95,17 @@ const Navbar = () => {
                 Dashboard
               </Link>
 
-              {/* MY ORDERS */}
-              <Link
-                to="/my-orders"
-                className="font-semibold dark:text-white hover:text-blue-600 transition"
-              >
-                My Orders
-              </Link>
+                   {/* MY ORDERS*/}
+                {user.role !== "admin" && (
+ 
+                           <Link
+                        to="/my-orders"
+                     className="font-semibold dark:text-white hover:text-blue-600 transition"
+                      >
+                       My Orders
+                        </Link>
+
+                           )}
 
               {/* ADMIN ONLY */}
               {user.role === "admin" && (
