@@ -33,6 +33,8 @@ import Checkout from "../pages/Checkout";
 
 import MyOrders from "../pages/MyOrders";
 
+import AdminOrders from "../pages/admin/AdminOrders";
+
 const AppRoutes = () => {
 
   return (
@@ -119,6 +121,15 @@ const AppRoutes = () => {
               </ProtectedRoute>
                 }
           />
+
+          <Route
+              path="/admin/orders"
+              element={
+              <ProtectedRoute>
+               <AdminOrders />
+            </ProtectedRoute>
+            }
+         />
 
         {/* Protected */}
         <Route

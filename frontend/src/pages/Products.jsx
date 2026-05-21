@@ -137,42 +137,44 @@ const Products = () => {
             className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500"
           />
 
+          
           {/* CATEGORY */}
-          <select
-            value={category}
-            onChange={(e) =>
-              setCategory(
-                e.target.value
-              )
-            }
-            className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500"
-          >
+<select
+  value={category}
+  onChange={(e) =>
+    setCategory(
+      e.target.value
+    )
+  }
+  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-2xl px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500"
+>
 
-            <option>
-              All
-            </option>
+  {/* ALL */}
+  <option value="All">
+    All
+  </option>
 
-            <option>
-              Laptop
-            </option>
+  {/* DYNAMIC CATEGORIES */}
+  {[
+    ...new Set(
+      products.map(
+        (product) =>
+          product.category
+      )
+    ),
+  ].map(
+    (cat, index) => (
 
-            <option>
-              Phone
-            </option>
+      <option
+        key={index}
+        value={cat}
+      >
+        {cat}
+      </option>
+    )
+  )}
 
-            <option>
-              Watch
-            </option>
-
-            <option>
-              Headphone
-            </option>
-
-            <option>
-              Camera
-            </option>
-
-          </select>
+</select>
 
         </div>
 
