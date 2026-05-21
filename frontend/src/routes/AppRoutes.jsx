@@ -35,6 +35,8 @@ import MyOrders from "../pages/MyOrders";
 
 import AdminOrders from "../pages/admin/AdminOrders";
 
+import Success from "../pages/Success";
+
 const AppRoutes = () => {
 
   return (
@@ -96,6 +98,11 @@ const AppRoutes = () => {
            </ProtectedRoute>
                  }
         />
+
+        <Route
+             path="/success"
+               element={<Success />}
+           />
         <Route
           path="/admin/edit-product/:id"
         element={

@@ -1,10 +1,14 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import express from "express";
 
 import mongoose from "mongoose";
 
 import cors from "cors";
 
-import dotenv from "dotenv";
+
 
 import authRoutes from "./routes/authRoutes.js";
 
@@ -12,7 +16,9 @@ import productRoutes from "./routes/productRoutes.js";
 
 import orderRoutes from "./routes/orderRoutes.js";
 
-dotenv.config();
+import paymentRoutes from "./routes/paymentRoutes.js";
+
+
 
 const app = express();
 
@@ -100,6 +106,11 @@ app.use(
   orderRoutes
 );
 
+
+app.use(
+  "/api/payments",
+  paymentRoutes
+);
 // ===============================
 // MongoDB Connection
 // ===============================

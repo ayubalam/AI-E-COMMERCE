@@ -2,26 +2,18 @@ import {
   useState,
 } from "react";
 
-import {
-  useNavigate,
-} from "react-router-dom";
-
 import toast from "react-hot-toast";
 
 import useCart from "../hooks/useCart";
 
 import {
-  createOrder,
-} from "../services/orderService";
+  checkoutPayment,
+} from "../services/paymentService";
 
 const Checkout = () => {
 
-  const navigate =
-    useNavigate();
-
   const {
     cartItems,
-    clearCart,
   } = useCart();
 
   // FORM DATA
@@ -34,7 +26,7 @@ const Checkout = () => {
       city: "",
       country: "",
       paymentMethod:
-        "Cash On Delivery",
+        "Razorpay",
     });
 
   // HANDLE CHANGE
@@ -78,67 +70,80 @@ const Checkout = () => {
 
       try {
 
-        // TOKEN
-        const token =
-          localStorage.getItem(
-            "token"
+        // CREATE ORDER
+        const order =
+          await checkoutPayment(
+            totalPrice
           );
 
-        // ORDER DATA
-        const orderData = {
+        // RAZORPAY OPTIONS
+        const options = {
 
-          orderItems:
-            cartItems,
+          key:
+            import.meta.env
+              .VITE_RAZORPAY_KEY,
 
-          shippingInfo: {
+          amount:
+            order.amount,
+
+          currency:
+            order.currency,
+
+          name:
+            "AI Smart Commerce",
+
+          description:
+            "Order Payment",
+
+          order_id:
+            order.id,
+
+          handler:
+            async function (
+              response
+            ) {
+
+              console.log(
+                response
+              );
+
+              toast.success(
+                "Payment Successful"
+              );
+
+              window.location.href =
+                "/success";
+            },
+
+          prefill: {
+
             name:
               formData.name,
 
             email:
               formData.email,
-
-            address:
-              formData.address,
-
-            city:
-              formData.city,
-
-            country:
-              formData.country,
           },
 
-          paymentMethod:
-            formData.paymentMethod,
-
-          totalPrice,
+          theme: {
+            color:
+              "#2563eb",
+          },
         };
 
-        // SAVE ORDER
-        await createOrder(
-          orderData,
-          token
-        );
+        // OPEN RAZORPAY
+        const paymentObject =
+          new window.Razorpay(
+            options
+          );
 
-        toast.success(
-          "Order Placed Successfully 🚀"
-        );
-
-        // CLEAR CART
-        clearCart();
-
-        // REDIRECT
-        navigate(
-          "/dashboard"
-        );
+        paymentObject.open();
 
       } catch (error) {
 
         console.log(error);
 
         toast.error(
-          error?.response?.data
-            ?.message ||
-            "Order Failed"
+          "Payment Failed"
         );
       }
     };
@@ -307,15 +312,7 @@ const Checkout = () => {
                 >
 
                   <option>
-                    Cash On Delivery
-                  </option>
-
-                  <option>
-                    Credit Card
-                  </option>
-
-                  <option>
-                    PayPal
+                    Razorpay
                   </option>
 
                 </select>
@@ -361,7 +358,7 @@ const Checkout = () => {
                     </span>
 
                     <span>
-                      $
+                      ₹
                       {item.price *
                         item.qty}
                     </span>
@@ -378,7 +375,7 @@ const Checkout = () => {
                 </span>
 
                 <span className="text-blue-600">
-                  $
+                  ₹
                   {totalPrice.toFixed(
                     2
                   )}
