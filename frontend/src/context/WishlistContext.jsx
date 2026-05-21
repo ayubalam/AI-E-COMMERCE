@@ -1,56 +1,90 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import WishlistContext from "./WishlistContextObject";
 
-const WishlistProvider = ({ children }) => {
+const WishlistProvider = ({
+  children,
+}) => {
 
-  const [wishlistItems, setWishlistItems] =
-    useState(() => {
+  const [wishlistItems,
+    setWishlistItems] =
+    useState([]);
 
-      const savedWishlist =
-        localStorage.getItem("wishlistItems");
+  // LOAD WISHLIST
+  useEffect(() => {
 
-      return savedWishlist
-        ? JSON.parse(savedWishlist)
-        : [];
-    });
+    const storedWishlist =
+      localStorage.getItem(
+        "wishlistItems"
+      );
 
-  // Save Wishlist
+    if (storedWishlist) {
+
+      const parsedWishlist =
+        JSON.parse(
+          storedWishlist
+        );
+
+      // FIX REACT WARNING
+      setTimeout(() => {
+
+        setWishlistItems(
+          parsedWishlist
+        );
+
+      }, 0);
+    }
+
+  }, []);
+
+  // SAVE WISHLIST
   useEffect(() => {
 
     localStorage.setItem(
       "wishlistItems",
-      JSON.stringify(wishlistItems)
+      JSON.stringify(
+        wishlistItems
+      )
     );
 
   }, [wishlistItems]);
 
-  // Add Wishlist
-  const addToWishlist = (product) => {
+  // ADD TO WISHLIST
+  const addToWishlist =
+    (product) => {
 
-    const existingItem =
-      wishlistItems.find(
-        (item) => item.id === product.id
-      );
+      const exists =
+        wishlistItems.find(
+          (item) =>
+            item._id ===
+            product._id
+        );
 
-    if (!existingItem) {
+      if (exists) return;
 
       setWishlistItems([
         ...wishlistItems,
         product,
       ]);
-    }
-  };
+    };
 
-  // Remove Wishlist
-  const removeFromWishlist = (id) => {
+  // REMOVE FROM WISHLIST
+  const removeFromWishlist =
+    (id) => {
 
-    setWishlistItems(
-      wishlistItems.filter(
-        (item) => item.id !== id
-      )
-    );
-  };
+      const updatedWishlist =
+        wishlistItems.filter(
+          (item) =>
+            item._id !== id
+        );
+
+      setWishlistItems(
+        updatedWishlist
+      );
+    };
 
   return (
     <WishlistContext.Provider

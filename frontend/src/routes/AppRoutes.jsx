@@ -23,6 +23,12 @@ import MainLayout from "../layouts/MainLayout";
 
 import ProtectedRoute from "./ProtectedRoute";
 
+import AddProduct from "../pages/admin/AddProduct";
+
+import AdminProducts from "../pages/admin/AdminProducts";
+
+import EditProduct from "../pages/admin/EditProduct";
+
 const AppRoutes = () => {
 
   return (
@@ -68,6 +74,32 @@ const AppRoutes = () => {
           path="/register"
           element={<Register />}
         />
+        <Route
+            path="/admin/add-product"
+            element={
+           <ProtectedRoute>
+            <AddProduct />
+          </ProtectedRoute>
+         }
+        />
+
+        <Route
+          path="/admin/edit-product/:id"
+        element={
+         <ProtectedRoute>
+           <EditProduct />
+          </ProtectedRoute>
+          }
+         />
+
+        <Route
+               path="/admin/products"
+               element={
+               <ProtectedRoute>
+                  <AdminProducts />
+                  </ProtectedRoute>
+               }
+           />
 
         {/* Protected */}
         <Route

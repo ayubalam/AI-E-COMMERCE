@@ -1,160 +1,201 @@
-import { useParams } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import products from "../data/products";
+import {
+  useParams,
+} from "react-router-dom";
+
+import {
+  FaHeart,
+  FaShoppingCart,
+} from "react-icons/fa";
+
+import toast from "react-hot-toast";
+
+import {
+  getSingleProduct,
+} from "../services/productService";
 
 import useCart from "../hooks/useCart";
 
 import useWishlist from "../hooks/useWishlist";
 
-import toast from "react-hot-toast";
-
-import { FaHeart } from "react-icons/fa";
-
 const ProductDetails = () => {
 
-  const { id } = useParams();
+  const { id } =
+    useParams();
 
-  const { addToCart } = useCart();
+  // CART
+  const { addToCart } =
+    useCart();
 
+  // WISHLIST
   const {
     addToWishlist,
-    wishlistItems,
   } = useWishlist();
 
-  const product = products.find(
-    (item) => item.id === Number(id)
-  );
+  const [product,
+    setProduct] =
+    useState(null);
 
-  if (!product) {
+  const [loading,
+    setLoading] =
+    useState(true);
+
+  // FETCH PRODUCT
+  useEffect(() => {
+
+    const fetchProduct =
+      async () => {
+
+        try {
+
+          const data =
+            await getSingleProduct(
+              id
+            );
+
+          setProduct(data);
+
+        } catch (error) {
+
+          console.log(error);
+
+        } finally {
+
+          setLoading(false);
+        }
+      };
+
+    fetchProduct();
+
+  }, [id]);
+
+  // LOADING
+  if (loading) {
+
     return (
-      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold dark:text-white">
+        Loading...
+      </div>
+    );
+  }
+
+  // PRODUCT NOT FOUND
+  if (!product) {
+
+    return (
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold text-red-500">
         Product Not Found
       </div>
     );
   }
 
-  const alreadyWishlisted =
-    wishlistItems.some(
-      (item) => item.id === product.id
-    );
-
   return (
-    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 py-16">
+    <section className="min-h-screen bg-slate-100 dark:bg-slate-900 px-4 py-10">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto">
 
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
+        <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2 gap-10">
 
-          {/* Product Image */}
-          <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-lg overflow-hidden">
+          {/* IMAGE */}
+          <div className="h-full">
 
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-[500px] object-cover"
+              className="w-full h-full object-cover"
             />
+
           </div>
 
-          {/* Product Info */}
-          <div>
+          {/* CONTENT */}
+          <div className="p-8 flex flex-col justify-center">
 
-            <p className="text-blue-600 font-semibold text-lg">
+            {/* CATEGORY */}
+            <span className="text-blue-600 font-semibold text-lg">
               {product.category}
-            </p>
+            </span>
 
-            <h1 className="text-5xl font-bold text-slate-800 dark:text-white mt-4">
+            {/* TITLE */}
+            <h1 className="text-5xl font-bold text-slate-800 dark:text-white mt-3">
               {product.name}
             </h1>
 
-            <p className="text-slate-600 dark:text-slate-300 text-lg mt-6 leading-relaxed">
-              Experience premium AI-powered technology
-              with smart features, high performance,
-              and futuristic design.
+            {/* DESCRIPTION */}
+            <p className="text-slate-500 dark:text-slate-300 mt-6 text-lg leading-relaxed">
+              {product.description}
             </p>
 
+            {/* PRICE */}
             <div className="mt-8">
 
-              <span className="text-4xl font-bold text-slate-900 dark:text-white">
+              <span className="text-4xl font-bold text-blue-600">
                 ${product.price}
               </span>
+
             </div>
 
-            {/* Buttons */}
-            <div className="flex flex-wrap gap-5 mt-10">
+            {/* STOCK */}
+            <div className="mt-4">
 
-              {/* Add To Cart */}
+              <span className="font-semibold dark:text-white">
+                Stock:
+              </span>{" "}
+
+              <span className="text-slate-600 dark:text-slate-300">
+                {product.stock}
+              </span>
+
+            </div>
+
+            {/* BUTTONS */}
+            <div className="flex flex-wrap gap-4 mt-10">
+
+              {/* ADD TO CART */}
               <button
                 onClick={() => {
-                  addToCart(product);
+
+                  addToCart(
+                    product
+                  );
 
                   toast.success(
-                    "Added to cart"
+                    "Added to Cart"
                   );
                 }}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold transition"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-semibold transition duration-300"
               >
+
+                <FaShoppingCart />
+
                 Add To Cart
+
               </button>
 
-              {/* Wishlist */}
+              {/* WISHLIST */}
               <button
                 onClick={() => {
-                  addToWishlist(product);
+
+                  addToWishlist(
+                    product
+                  );
 
                   toast.success(
-                    "Added to wishlist"
+                    "Added To Wishlist"
                   );
                 }}
-                disabled={alreadyWishlisted}
-                className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-lg font-semibold transition
-                  
-                  ${
-                    alreadyWishlisted
-                      ? "bg-pink-200 text-pink-700 cursor-not-allowed"
-                      : "bg-pink-500 hover:bg-pink-600 text-white"
-                  }
-                `}
+                className="flex items-center gap-2 border border-slate-300 dark:border-slate-600 px-8 py-4 rounded-2xl font-semibold dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition duration-300"
               >
+
                 <FaHeart />
 
-                {alreadyWishlisted
-                  ? "Wishlisted"
-                  : "Add Wishlist"}
+                Wishlist
+
               </button>
-            </div>
 
-            {/* Extra Info */}
-            <div className="mt-12 grid sm:grid-cols-3 gap-5">
-
-              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
-                <h3 className="font-bold text-lg dark:text-white">
-                  Free Shipping
-                </h3>
-
-                <p className="text-slate-500 mt-2">
-                  Delivery within 3-5 days
-                </p>
-              </div>
-
-              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
-                <h3 className="font-bold text-lg dark:text-white">
-                  Warranty
-                </h3>
-
-                <p className="text-slate-500 mt-2">
-                  1 Year Official Warranty
-                </p>
-              </div>
-
-              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow">
-                <h3 className="font-bold text-lg dark:text-white">
-                  Secure Payment
-                </h3>
-
-                <p className="text-slate-500 mt-2">
-                  100% secure transactions
-                </p>
-              </div>
             </div>
           </div>
         </div>

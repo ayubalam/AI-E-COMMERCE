@@ -1,5 +1,8 @@
-import { createContext } from "react";
+import {
+  createContext,
+} from "react";
 
-const WishlistContext = createContext();
+const WishlistContext =
+  createContext();
 
 export default WishlistContext;

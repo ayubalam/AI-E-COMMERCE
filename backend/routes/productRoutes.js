@@ -5,6 +5,7 @@ import {
   getProducts,
   getProduct,
   deleteProduct,
+  updateProduct,
 } from "../controllers/productController.js";
 
 import {
@@ -34,6 +35,13 @@ router.post(
   protect,
   adminOnly,
   createProduct
+);
+
+router.put(
+  "/:id",
+  protect,
+  adminOnly,
+  updateProduct
 );
 
 router.delete(
