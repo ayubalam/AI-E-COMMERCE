@@ -87,21 +87,21 @@ const Navbar = () => {
           {user && (
             <>
 
-             {/* DASHBOARD */}
-                 <Link
-                 to="/dashboard"
-               className="font-semibold dark:text-white hover:text-blue-600 transition"
-               >
-               Dashboard
-                     </Link>
+              {/* DASHBOARD */}
+              <Link
+                to="/dashboard"
+                className="font-semibold dark:text-white hover:text-blue-600 transition"
+              >
+                Dashboard
+              </Link>
 
-                    {/* MY ORDERS */}
-                     <Link
-                        to="/my-orders"
-                         className="font-semibold dark:text-white hover:text-blue-600 transition"
-                           >
-                       My Orders
-                     </Link>
+              {/* MY ORDERS */}
+              <Link
+                to="/my-orders"
+                className="font-semibold dark:text-white hover:text-blue-600 transition"
+              >
+                My Orders
+              </Link>
 
               {/* ADMIN ONLY */}
               {user.role === "admin" && (
@@ -123,17 +123,19 @@ const Navbar = () => {
                     Manage Products
                   </Link>
 
+                  {/* MANAGE ORDERS */}
+                  <Link
+                    to="/admin/orders"
+                    className="font-semibold text-purple-600 hover:text-purple-700 transition"
+                  >
+                    Manage Orders
+                  </Link>
+
                 </div>
               )}
+
             </>
           )}
-
-          <Link
-  to="/admin/orders"
-  className="font-semibold text-purple-600 hover:text-purple-700 transition"
->
-  Manage Orders
-</Link>
 
           {/* WISHLIST */}
           <Link
@@ -185,6 +187,7 @@ const Navbar = () => {
                 <span className="font-semibold dark:text-white">
                   {user.email}
                 </span>
+
               </div>
 
               {/* LOGOUT */}
@@ -196,6 +199,7 @@ const Navbar = () => {
               >
                 Logout
               </button>
+
             </div>
 
           ) : (
@@ -225,10 +229,13 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+
         </nav>
+
       </div>
+
     </header>
   );
 };
 
-export default Navbar;  
+export default Navbar;

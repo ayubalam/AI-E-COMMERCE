@@ -133,6 +133,7 @@ const MyOrders = () => {
 
                     <div className="flex gap-5 flex-wrap">
 
+                      {/* PAYMENT */}
                       <div>
 
                         <p className="text-slate-500 dark:text-slate-300">
@@ -145,6 +146,7 @@ const MyOrders = () => {
 
                       </div>
 
+                      {/* TOTAL */}
                       <div>
 
                         <p className="text-slate-500 dark:text-slate-300">
@@ -158,42 +160,77 @@ const MyOrders = () => {
 
                       </div>
 
+                      {/* STATUS */}
                       <div>
 
-  <p className="text-slate-500 dark:text-slate-300">
-    Status
-  </p>
+                        <p className="text-slate-500 dark:text-slate-300">
+                          Status
+                        </p>
 
-  <h3
-    className={`font-bold
+                        <h3
+                          className={`font-bold
 
-      ${
-        order.orderStatus ===
-        "Delivered"
+                            ${
+                              order.orderStatus ===
+                              "Delivered"
 
-          ? "text-green-500"
+                                ? "text-green-500"
 
-          : order.orderStatus ===
-            "Shipped"
+                                : order.orderStatus ===
+                                  "Shipped"
 
-          ? "text-purple-500"
+                                ? "text-purple-500"
 
-          : order.orderStatus ===
-            "Processing"
+                                : order.orderStatus ===
+                                  "Processing"
 
-          ? "text-yellow-500"
+                                ? "text-yellow-500"
 
-          : "text-blue-500"
-      }
-    `}
-  >
+                                : "text-blue-500"
+                            }
+                          `}
+                        >
 
-    {order.orderStatus}
+                          {order.orderStatus}
 
-  </h3>
+                        </h3>
 
-</div>
+                      </div>
+
                     </div>
+
+                  </div>
+
+                  {/* TRACKING INFO */}
+                  <div className="px-6 pt-5 space-y-2">
+
+                    <p className="dark:text-white">
+
+                      <span className="font-semibold">
+                        Tracking Number:
+                      </span>
+                      {" "}
+
+                      {
+                        order.trackingNumber ||
+                        "N/A"
+                      }
+
+                    </p>
+
+                    <p className="dark:text-white">
+
+                      <span className="font-semibold">
+                        Courier Service:
+                      </span>
+                      {" "}
+
+                      {
+                        order.courierService ||
+                        "N/A"
+                      }
+
+                    </p>
 
                   </div>
 

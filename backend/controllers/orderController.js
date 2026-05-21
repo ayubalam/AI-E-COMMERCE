@@ -135,9 +135,16 @@ export const updateOrderStatus =
       }
 
       // UPDATE STATUS
-      order.orderStatus =
-        req.body.status;
+     order.orderStatus =
+  req.body.status;
 
+order.trackingNumber =
+  req.body.trackingNumber ||
+  order.trackingNumber;
+
+order.courierService =
+  req.body.courierService ||
+  order.courierService;
       // DELIVERED
       if (
         req.body.status ===

@@ -100,7 +100,9 @@ const AdminOrders = () => {
   const handleStatusUpdate =
     async (
       id,
-      status
+      status,
+      trackingNumber,
+      courierService
     ) => {
 
       try {
@@ -120,7 +122,12 @@ const AdminOrders = () => {
             },
 
             body: JSON.stringify({
+
               status,
+
+              trackingNumber,
+
+              courierService,
             }),
           }
         );
@@ -241,7 +248,9 @@ const AdminOrders = () => {
                         onChange={(e) =>
                           handleStatusUpdate(
                             order._id,
-                            e.target.value
+                            e.target.value,
+                            order.trackingNumber,
+                            order.courierService
                           )
                         }
 
@@ -269,6 +278,45 @@ const AdminOrders = () => {
                     </div>
 
                   </div>
+
+                </div>
+
+                {/* TRACKING */}
+                <div className="px-6 pt-5 flex flex-col md:flex-row gap-4">
+
+                  <input
+                    type="text"
+                    placeholder="Tracking Number"
+                    defaultValue={
+                      order.trackingNumber
+                    }
+                    className="border rounded-xl px-4 py-3 dark:bg-slate-700 dark:text-white"
+                    onBlur={(e) =>
+                      handleStatusUpdate(
+                        order._id,
+                        order.orderStatus,
+                        e.target.value,
+                        order.courierService
+                      )
+                    }
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Courier Service"
+                    defaultValue={
+                      order.courierService
+                    }
+                    className="border rounded-xl px-4 py-3 dark:bg-slate-700 dark:text-white"
+                    onBlur={(e) =>
+                      handleStatusUpdate(
+                        order._id,
+                        order.orderStatus,
+                        order.trackingNumber,
+                        e.target.value
+                      )
+                    }
+                  />
 
                 </div>
 

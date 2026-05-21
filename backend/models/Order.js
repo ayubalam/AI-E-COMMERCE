@@ -71,33 +71,41 @@ const orderSchema =
       paidAt: Date,
 
       // PAYMENT RESULT
-     paymentResult: {
+      paymentResult: {
 
-  id: String,
+        id: String,
 
-  status: String,
+        status: String,
 
-  update_time: String,
+        update_time: String,
 
-  email_address: String,
-},
+        email_address: String,
+      },
 
-// ORDER STATUS
-orderStatus: {
+      // ORDER STATUS
+      orderStatus: {
 
-  type: String,
+        type: String,
 
-  default: "Paid",
-},
+        default: "Paid",
+      },
 
-// DELIVERY STATUS
-isDelivered: {
+      // TRACKING
+      trackingNumber: {
 
-  type: Boolean,
+        type: String,
 
-  default: false,
-},
-      // DELIVERY STATUS
+        default: "",
+      },
+
+      courierService: {
+
+        type: String,
+
+        default: "",
+      },
+
+      // DELIVERY
       isDelivered: {
 
         type: Boolean,
