@@ -10,6 +10,10 @@ import toast from "react-hot-toast";
 
 import useCart from "../hooks/useCart";
 
+import {
+  createOrder,
+} from "../services/orderService";
+
 const Checkout = () => {
 
   const navigate =
@@ -56,7 +60,7 @@ const Checkout = () => {
 
   // PLACE ORDER
   const handleOrder =
-    (e) => {
+    async (e) => {
 
       e.preventDefault();
 
@@ -72,15 +76,71 @@ const Checkout = () => {
         return;
       }
 
-      toast.success(
-        "Order Placed Successfully"
-      );
+      try {
 
-      // CLEAR CART
-      clearCart();
+        // TOKEN
+        const token =
+          localStorage.getItem(
+            "token"
+          );
 
-      // REDIRECT
-      navigate("/");
+        // ORDER DATA
+        const orderData = {
+
+          orderItems:
+            cartItems,
+
+          shippingInfo: {
+            name:
+              formData.name,
+
+            email:
+              formData.email,
+
+            address:
+              formData.address,
+
+            city:
+              formData.city,
+
+            country:
+              formData.country,
+          },
+
+          paymentMethod:
+            formData.paymentMethod,
+
+          totalPrice,
+        };
+
+        // SAVE ORDER
+        await createOrder(
+          orderData,
+          token
+        );
+
+        toast.success(
+          "Order Placed Successfully 🚀"
+        );
+
+        // CLEAR CART
+        clearCart();
+
+        // REDIRECT
+        navigate(
+          "/dashboard"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          error?.response?.data
+            ?.message ||
+            "Order Failed"
+        );
+      }
     };
 
   return (
@@ -325,7 +385,9 @@ const Checkout = () => {
                 </span>
 
               </div>
+
             </div>
+
           </div>
         </div>
       </div>
