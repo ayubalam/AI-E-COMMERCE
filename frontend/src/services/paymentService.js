@@ -17,3 +17,16 @@ export const checkoutPayment =
 
     return data;
   };
+
+// VERIFY PAYMENT
+export const verifyPayment =
+  async (paymentData) => {
+
+    const { data } =
+      await axios.post(
+        `${API}/verify-payment`,
+        paymentData
+      );
+
+    return data;
+  };

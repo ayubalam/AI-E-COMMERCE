@@ -6,22 +6,44 @@ export const createOrder =
 
     try {
 
-      const {
-        orderItems,
-        shippingInfo,
-        paymentMethod,
-        totalPrice,
-      } = req.body;
+     const {
 
-      const order =
-        await Order.create({
-          user:
-            req.user._id,
-          orderItems,
-          shippingInfo,
-          paymentMethod,
-          totalPrice,
-        });
+  orderItems,
+
+  shippingInfo,
+
+  paymentMethod,
+
+  totalPrice,
+
+  isPaid,
+
+  paidAt,
+
+  paymentResult,
+
+} = req.body;
+
+     const order =
+  await Order.create({
+
+    user:
+      req.user._id,
+
+    orderItems,
+
+    shippingInfo,
+
+    paymentMethod,
+
+    totalPrice,
+
+    isPaid,
+
+    paidAt,
+
+    paymentResult,
+  });
 
       res.status(201).json({
         success: true,

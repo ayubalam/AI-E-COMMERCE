@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 import useCart from "../hooks/useCart";
 
 import {
+
   checkoutPayment,
+
+  verifyPayment,
+
 } from "../services/paymentService";
 
 const Checkout = () => {
@@ -98,81 +102,134 @@ const Checkout = () => {
           order_id:
             order.id,
 
-         handler:
-  async function () {
+handler:
+  async function (
+    response
+  ) {
 
     try {
 
-      // ORDER DATA
+      // VERIFY PAYMENT
+      const verify =
+        await verifyPayment({
+          razorpay_order_id:
+            response
+              .razorpay_order_id,
+
+          razorpay_payment_id:
+            response
+              .razorpay_payment_id,
+
+          razorpay_signature:
+            response
+              .razorpay_signature,
+        });
+
+      // CHECK VERIFIED
+      if (
+        verify.success
+      ) {
+
+        // ORDER DATA
       const orderData = {
 
-        orderItems:
-          cartItems,
+  orderItems:
+    cartItems,
 
-        shippingInfo: {
+  shippingInfo: {
 
-          address:
-            formData.address,
+    address:
+      formData.address,
 
-          city:
-            formData.city,
+    city:
+      formData.city,
 
-          country:
-            formData.country,
-        },
+    country:
+      formData.country,
+  },
 
-        paymentMethod:
-          "Razorpay",
+  paymentMethod:
+    "Razorpay",
 
-        totalPrice,
-      };
+  totalPrice,
 
-      // TOKEN
-      const token =
-        localStorage.getItem(
-          "token"
+  // PAYMENT STATUS
+  isPaid: true,
+
+  paidAt:
+    new Date(),
+
+  paymentResult: {
+
+    id:
+      response
+        .razorpay_payment_id,
+
+    status:
+      "Paid",
+
+    update_time:
+      new Date(),
+
+    email_address:
+      formData.email,
+  },
+};
+
+        // TOKEN
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+        // SAVE ORDER
+        await fetch(
+          "http://localhost:5000/api/orders",
+          {
+            method: "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/json",
+
+              Authorization:
+                `Bearer ${token}`,
+            },
+
+            body:
+              JSON.stringify(
+                orderData
+              ),
+          }
         );
 
-      // SAVE ORDER
-      await fetch(
-        "http://localhost:5000/api/orders",
-        {
-          method: "POST",
+        // CLEAR CART
+        localStorage.removeItem(
+          "cartItems"
+        );
 
-          headers: {
+        toast.success(
+          "Payment Verified"
+        );
 
-            "Content-Type":
-              "application/json",
+        // REDIRECT
+        window.location.href =
+          "/success";
 
-            Authorization:
-              `Bearer ${token}`,
-          },
+      } else {
 
-          body: JSON.stringify(
-            orderData
-          ),
-        }
-      );
-
-      // CLEAR CART
-      localStorage.removeItem(
-        "cartItems"
-      );
-
-      toast.success(
-        "Payment Successful"
-      );
-
-      // REDIRECT
-      window.location.href =
-        "/success";
+        toast.error(
+          "Payment Verification Failed"
+        );
+      }
 
     } catch (error) {
 
       console.log(error);
 
       toast.error(
-        "Order Save Failed"
+        "Verification Failed"
       );
     }
   },

@@ -3,7 +3,6 @@ import axios from "axios";
 const API =
   "http://localhost:5000/api/products";
 
-
 // GET ALL PRODUCTS
 export const getProducts =
   async () => {
@@ -13,7 +12,6 @@ export const getProducts =
 
     return data.products;
   };
-
 
 // GET SINGLE PRODUCT
 export const getSingleProduct =
@@ -27,18 +25,17 @@ export const getSingleProduct =
     return data.product;
   };
 
-
 // CREATE PRODUCT
 export const createProduct =
   async (
-    product,
+    productData,
     token
   ) => {
 
     const { data } =
       await axios.post(
         API,
-        product,
+        productData,
         {
           headers: {
             Authorization:
@@ -47,22 +44,21 @@ export const createProduct =
         }
       );
 
-    return data;
+    return data.product;
   };
-
 
 // UPDATE PRODUCT
 export const updateProduct =
   async (
     id,
-    product,
+    productData,
     token
   ) => {
 
     const { data } =
       await axios.put(
         `${API}/${id}`,
-        product,
+        productData,
         {
           headers: {
             Authorization:
@@ -71,9 +67,8 @@ export const updateProduct =
         }
       );
 
-    return data;
+    return data.product;
   };
-
 
 // DELETE PRODUCT
 export const deleteProduct =

@@ -14,40 +14,79 @@ const orderSchema =
       orderItems: [
         {
           name: String,
+
           qty: Number,
+
           image: String,
+
           price: Number,
+
           product: {
             type:
               mongoose.Schema
                 .Types
                 .ObjectId,
+
             ref: "Product",
           },
         },
       ],
 
       shippingInfo: {
+
         name: String,
+
         email: String,
+
         address: String,
+
         city: String,
+
         country: String,
       },
 
       paymentMethod: {
+
         type: String,
+
         default:
           "Cash On Delivery",
       },
 
       totalPrice: {
+
         type: Number,
+
         required: true,
       },
 
-      isDelivered: {
+      // PAYMENT STATUS
+      isPaid: {
+
         type: Boolean,
+
+        default: false,
+      },
+
+      paidAt: Date,
+
+      // PAYMENT RESULT
+      paymentResult: {
+
+        id: String,
+
+        status: String,
+
+        update_time: String,
+
+        email_address: String,
+      },
+
+      // DELIVERY STATUS
+      isDelivered: {
+
+        type: Boolean,
+
         default: false,
       },
 
