@@ -98,22 +98,84 @@ const Checkout = () => {
           order_id:
             order.id,
 
-          handler:
-            async function (
-              response
-            ) {
+         handler:
+  async function () {
 
-              console.log(
-                response
-              );
+    try {
 
-              toast.success(
-                "Payment Successful"
-              );
+      // ORDER DATA
+      const orderData = {
 
-              window.location.href =
-                "/success";
-            },
+        orderItems:
+          cartItems,
+
+        shippingInfo: {
+
+          address:
+            formData.address,
+
+          city:
+            formData.city,
+
+          country:
+            formData.country,
+        },
+
+        paymentMethod:
+          "Razorpay",
+
+        totalPrice,
+      };
+
+      // TOKEN
+      const token =
+        localStorage.getItem(
+          "token"
+        );
+
+      // SAVE ORDER
+      await fetch(
+        "http://localhost:5000/api/orders",
+        {
+          method: "POST",
+
+          headers: {
+
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${token}`,
+          },
+
+          body: JSON.stringify(
+            orderData
+          ),
+        }
+      );
+
+      // CLEAR CART
+      localStorage.removeItem(
+        "cartItems"
+      );
+
+      toast.success(
+        "Payment Successful"
+      );
+
+      // REDIRECT
+      window.location.href =
+        "/success";
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error(
+        "Order Save Failed"
+      );
+    }
+  },
 
           prefill: {
 
