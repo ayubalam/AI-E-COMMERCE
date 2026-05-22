@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 
 dotenv.config();
+
 console.log(process.env.MONGO_URI);
 
 import express from "express";
@@ -9,8 +10,9 @@ import mongoose from "mongoose";
 
 import cors from "cors";
 
+import cloudinary from "cloudinary";
 
-
+// ROUTES
 import authRoutes from "./routes/authRoutes.js";
 
 import productRoutes from "./routes/productRoutes.js";
@@ -21,21 +23,35 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 
 import couponRoutes from "./routes/couponRoutes.js";
 
-
-
 const app = express();
 
+// ===============================
+// CLOUDINARY CONFIG
+// ===============================
+cloudinary.v2.config({
+
+  cloud_name:
+    process.env
+      .CLOUDINARY_CLOUD_NAME,
+
+  api_key:
+    process.env
+      .CLOUDINARY_API_KEY,
+
+  api_secret:
+    process.env
+      .CLOUDINARY_API_SECRET,
+});
 
 // ===============================
-// Middleware
+// MIDDLEWARE
 // ===============================
 app.use(cors());
 
 app.use(express.json());
 
-
 // ===============================
-// Home Route
+// HOME ROUTE
 // ===============================
 app.get("/", (req, res) => {
 
@@ -46,21 +62,18 @@ app.get("/", (req, res) => {
   });
 });
 
-
 // ===============================
-// Test Route
+// TEST ROUTE
 // ===============================
 app.get("/test", async (req, res) => {
 
   try {
 
-    // Schema
     const TestSchema =
       new mongoose.Schema({
         name: String,
       });
 
-    // Model
     const TestModel =
       mongoose.models.Test ||
       mongoose.model(
@@ -68,10 +81,10 @@ app.get("/test", async (req, res) => {
         TestSchema
       );
 
-    // Insert Test Data
     const data =
       await TestModel.create({
-        name: "AI Ecommerce",
+        name:
+          "AI Ecommerce",
       });
 
     res.status(201).json({
@@ -85,14 +98,14 @@ app.get("/test", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message:
+        error.message,
     });
   }
 });
 
-
 // ===============================
-// API Routes
+// API ROUTES
 // ===============================
 app.use(
   "/api/auth",
@@ -109,7 +122,6 @@ app.use(
   orderRoutes
 );
 
-
 app.use(
   "/api/payments",
   paymentRoutes
@@ -121,10 +133,12 @@ app.use(
 );
 
 // ===============================
-// MongoDB Connection
+// MONGODB CONNECTION
 // ===============================
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(
+    process.env.MONGO_URI
+  )
   .then(() => {
 
     console.log(
@@ -132,7 +146,8 @@ mongoose
     );
 
     app.listen(
-      process.env.PORT || 5000,
+      process.env.PORT ||
+        5000,
       () => {
 
         console.log(

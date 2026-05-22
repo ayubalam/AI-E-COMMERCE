@@ -1,22 +1,33 @@
 import express from "express";
 
 import {
+
   createProduct,
+
   getProducts,
+
   getProduct,
+
   deleteProduct,
+
   updateProduct,
+
   createReview,
+
 } from "../controllers/productController.js";
 
 import {
+
   protect,
+
   adminOnly,
+
 } from "../middleware/authMiddleware.js";
+
+import upload from "../middleware/uploadMiddleware.js";
 
 const router =
   express.Router();
-
 
 // PUBLIC
 router.get(
@@ -29,7 +40,6 @@ router.get(
   getProduct
 );
 
-
 // REVIEW
 router.post(
   "/:id/review",
@@ -37,6 +47,22 @@ router.post(
   createReview
 );
 
+// IMAGE UPLOAD
+router.post(
+  "/upload",
+  protect,
+  adminOnly,
+  upload.single("image"),
+  (req, res) => {
+
+    res.json({
+      success: true,
+
+      image:
+        req.file.path,
+    });
+  }
+);
 
 // ADMIN
 router.post(

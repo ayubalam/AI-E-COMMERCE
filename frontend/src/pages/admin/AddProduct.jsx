@@ -19,6 +19,10 @@ const AddProduct = () => {
       stock: "",
     });
 
+  const [uploading,
+    setUploading] =
+    useState(false);
+
   const handleChange =
     (e) => {
 
@@ -27,6 +31,72 @@ const AddProduct = () => {
         [e.target.name]:
           e.target.value,
       });
+    };
+
+  // IMAGE UPLOAD
+  const uploadImage =
+    async (e) => {
+
+      const file =
+        e.target.files[0];
+
+      if (!file) return;
+
+      try {
+
+        setUploading(true);
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+        const imageData =
+          new FormData();
+
+        imageData.append(
+          "image",
+          file
+        );
+
+        const { data } =
+          await axios.post(
+            "http://localhost:5000/api/products/upload",
+            imageData,
+            {
+              headers: {
+
+                Authorization:
+                  `Bearer ${token}`,
+
+                "Content-Type":
+                  "multipart/form-data",
+              },
+            }
+          );
+
+        setFormData({
+          ...formData,
+          image:
+            data.image,
+        });
+
+        toast.success(
+          "Image Uploaded"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        toast.error(
+          "Image Upload Failed"
+        );
+
+      } finally {
+
+        setUploading(false);
+      }
     };
 
   const handleSubmit =
@@ -155,18 +225,35 @@ const AddProduct = () => {
           <div>
 
             <label className="block mb-2 font-semibold dark:text-white">
-              Image URL
+              Upload Image
             </label>
 
             <input
-              type="text"
-              name="image"
-              value={formData.image}
-              onChange={handleChange}
-              placeholder="Enter image URL"
-              className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              type="file"
+              accept="image/*"
+              onChange={uploadImage}
+              className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-3 outline-none"
               required
             />
+
+            {uploading && (
+
+              <p className="text-blue-600 mt-2">
+
+                Uploading Image...
+
+              </p>
+            )}
+
+            {formData.image && (
+
+              <img
+                src={formData.image}
+                alt="Preview"
+                className="w-40 h-40 object-cover rounded-2xl mt-4"
+              />
+            )}
+
           </div>
 
           {/* STOCK */}
