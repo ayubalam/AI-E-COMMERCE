@@ -1,5 +1,5 @@
+import Product from "../models/Product.js";
 import Order from "../models/Order.js";
-
 
 import sendSMS from "../utils/sendSMS.js";
 
@@ -27,6 +27,41 @@ export const createOrder =
 
       } = req.body;
 
+      // CHECK STOCK
+      for (
+        const item of orderItems
+      ) {
+
+        const product =
+          await Product.findById(
+            item.product ||
+            item._id
+          );
+
+        // PRODUCT NOT FOUND
+        if (!product) {
+
+          return res.status(404).json({
+            success: false,
+            message:
+              "Product not found",
+          });
+        }
+
+        // OUT OF STOCK
+        if (
+          product.stock <
+          item.qty
+        ) {
+
+          return res.status(400).json({
+            success: false,
+            message:
+              `${product.name} is out of stock`,
+          });
+        }
+      }
+
       // CREATE ORDER
       const order =
         await Order.create({
@@ -49,26 +84,45 @@ export const createOrder =
           paymentResult,
         });
 
+      // UPDATE STOCK
+      for (
+        const item of orderItems
+      ) {
+
+        const product =
+          await Product.findById(
+            item.product ||
+            item._id
+          );
+
+        if (product) {
+
+          product.stock =
+            product.stock -
+            item.qty;
+
+          await product.save();
+        }
+      }
+
       // SEND SMS
       if (
         shippingInfo.phone
       ) {
 
-        await sendSMS(
+      await sendSMS(
+  shippingInfo.phone,
 
-          shippingInfo.phone,
-            
+  `Hello ${shippingInfo.name},
 
-          `Hello ${shippingInfo.name},
+Your order has been placed successfully.
 
-Your order has been placed successfully 🚀
-
-Total Amount: ₹${totalPrice}
+Amount: Rs ${totalPrice}
 
 Payment Method: ${paymentMethod}
 
-Thank you for shopping with AI Smart Commerce`
-        );
+Thank you for shopping with AI Smart Commerce.`
+);
       }
 
       res.status(201).json({
@@ -77,6 +131,12 @@ Thank you for shopping with AI Smart Commerce`
       });
 
     } catch (error) {
+
+      console.log(
+        "ORDER ERROR "
+      );
+
+      console.log(error);
 
       res.status(500).json({
         success: false,

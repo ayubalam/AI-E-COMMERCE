@@ -7,26 +7,53 @@ const API =
 export const checkoutPayment =
   async (amount) => {
 
-    const { data } =
-      await axios.post(
-        `${API}/create-order`,
-        {
-          amount,
-        }
+    try {
+
+      const { data } =
+        await axios.post(
+          `${API}/create-order`,
+          {
+            amount:
+              Number(amount),
+          }
+        );
+
+      return data;
+
+    } catch (error) {
+
+      console.log(
+        "PAYMENT ERROR ❌"
       );
 
-    return data;
+      console.log(error);
+
+      throw error;
+    }
   };
 
 // VERIFY PAYMENT
 export const verifyPayment =
   async (paymentData) => {
 
-    const { data } =
-      await axios.post(
-        `${API}/verify-payment`,
-        paymentData
+    try {
+
+      const { data } =
+        await axios.post(
+          `${API}/verify-payment`,
+          paymentData
+        );
+
+      return data;
+
+    } catch (error) {
+
+      console.log(
+        "VERIFY ERROR ❌"
       );
 
-    return data;
+      console.log(error);
+
+      throw error;
+    }
   };

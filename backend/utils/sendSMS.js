@@ -7,16 +7,41 @@ const sendSMS = async (
 
   try {
 
-    console.log(
-      "SID:",
-      process.env.TWILIO_ACCOUNT_SID
-    );
+    // CHECK ENV
+    if (
+      !process.env.TWILIO_ACCOUNT_SID ||
+      !process.env.TWILIO_AUTH_TOKEN ||
+      !process.env.TWILIO_PHONE_NUMBER
+    ) {
+
+      console.log(
+        "Twilio ENV Missing ❌"
+      );
+
+      return;
+    }
+
+    // FORMAT PHONE
+    let formattedPhone =
+      phone;
+
+    // INDIA FORMAT
+    if (
+      !formattedPhone.startsWith(
+        "+91"
+      )
+    ) {
+
+      formattedPhone =
+        `+91${formattedPhone}`;
+    }
 
     console.log(
-      "TOKEN:",
-      process.env.TWILIO_AUTH_TOKEN
+      "Sending SMS To:",
+      formattedPhone
     );
 
+    // CLIENT
     const client =
       twilio(
 
@@ -27,6 +52,7 @@ const sendSMS = async (
           .TWILIO_AUTH_TOKEN
       );
 
+    // SEND SMS
     const sms =
       await client.messages.create({
 
@@ -36,7 +62,8 @@ const sendSMS = async (
           process.env
             .TWILIO_PHONE_NUMBER,
 
-        to: phone,
+        to:
+          formattedPhone,
       });
 
     console.log(
@@ -44,6 +71,7 @@ const sendSMS = async (
     );
 
     console.log(
+      "SID:",
       sms.sid
     );
 
@@ -53,9 +81,7 @@ const sendSMS = async (
       "SMS Error ❌"
     );
 
-    console.log(
-      error.message
-    );
+    console.log(error);
   }
 };
 

@@ -125,23 +125,43 @@ const Cart = () => {
 
                       {/* PLUS */}
                       <button
-                        className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl"
-                        onClick={() =>
-                          addToCart(
-                            item
-                          )
-                        }
-                      >
+                        className={`
 
+                           ${
+                          item.qty >= item.stock
+
+                          ? "bg-slate-400 cursor-not-allowed"
+
+                           : "bg-blue-600 hover:bg-blue-700"
+                               }
+
+                                 text-white p-3 rounded-xl
+                                `}
+                              disabled={
+                             item.qty >= item.stock
+                            }
+                            onClick={() => {
+
+                                   if (
+                              item.qty >= item.stock
+                                     ) {
+
+                                      return;
+                                         }
+
+                                      addToCart(item);
+                                            }}
+                                   >
                         <FaPlus />
 
                       </button>
 
                       {/* QTY */}
-                      <span className="text-2xl font-bold dark:text-white">
-                        {item.qty}
-                      </span>
-
+                      <p className="text-sm text-slate-500 dark:text-slate-300">
+                       Stock Left:
+                          {" "}
+                       {item.stock - item.qty}
+                              </p>
                       {/* MINUS */}
                       <button
                         className="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-xl"
@@ -193,9 +213,15 @@ const Cart = () => {
                   Items
                 </span>
 
-                <span>
-                  {cartItems.length}
-                </span>
+               <span>
+                 {
+                cartItems.reduce(
+                 (acc, item) =>
+                  acc + item.qty,
+                  0
+                  )
+                  }
+                   </span>
 
               </div>
 

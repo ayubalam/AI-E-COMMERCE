@@ -170,6 +170,19 @@ const Checkout = () => {
             finalPrice
           );
 
+        // CHECK RAZORPAY KEY
+        if (
+          !import.meta.env
+            .VITE_RAZORPAY_KEY
+        ) {
+
+          toast.error(
+            "Razorpay Key Missing"
+          );
+
+          return;
+        }
+
         // RAZORPAY OPTIONS
         const options = {
 
@@ -188,6 +201,9 @@ const Checkout = () => {
 
           description:
             "Order Payment",
+
+          image:
+            "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
 
           order_id:
             order.id,
@@ -280,40 +296,61 @@ const Checkout = () => {
                       "token"
                     );
 
+                  console.log(token);
+
                   // SAVE ORDER
-                  await fetch(
-                    "http://localhost:5000/api/orders",
-                    {
-                      method: "POST",
+                  const saveOrder =
+                    await fetch(
+                      "http://localhost:5000/api/orders",
+                      {
+                        method: "POST",
 
-                      headers: {
+                        headers: {
 
-                        "Content-Type":
-                          "application/json",
+                          "Content-Type":
+                            "application/json",
 
-                        Authorization:
-                          `Bearer ${token}`,
-                      },
+                          Authorization:
+                            `Bearer ${token}`,
+                        },
 
-                      body:
-                        JSON.stringify(
-                          orderData
-                        ),
-                    }
-                  );
+                        body:
+                          JSON.stringify(
+                            orderData
+                          ),
+                      }
+                    );
 
-                  // CLEAR CART
-                  localStorage.removeItem(
-                    "cartItems"
-                  );
+                  const savedData =
+                    await saveOrder.json();
 
-                  toast.success(
-                    "Payment Verified"
-                  );
+                  console.log(savedData);
 
-                  // REDIRECT
-                  window.location.href =
-                    "/success";
+                  // CHECK SUCCESS
+                  if (
+                    savedData.success
+                  ) {
+
+                    // CLEAR CART
+                    localStorage.removeItem(
+                      "cartItems"
+                    );
+
+                    toast.success(
+                      "Order Placed Successfully"
+                    );
+
+                    // REDIRECT
+                    window.location.href =
+                      "/my-orders";
+
+                  } else {
+
+                    toast.error(
+                      savedData.message ||
+                      "Order Save Failed"
+                    );
+                  }
 
                 } else {
 
@@ -373,7 +410,6 @@ const Checkout = () => {
 
       <div className="max-w-7xl mx-auto">
 
-        {/* HEADING */}
         <div className="mb-10">
 
           <h1 className="text-5xl font-bold dark:text-white">
@@ -402,20 +438,15 @@ const Checkout = () => {
               <div>
 
                 <label className="block font-semibold mb-2 dark:text-white">
-                  Full Name
+                  Name
                 </label>
 
                 <input
                   type="text"
                   name="name"
-                  value={
-                    formData.name
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.name}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter full name"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 
@@ -431,14 +462,9 @@ const Checkout = () => {
                 <input
                   type="email"
                   name="email"
-                  value={
-                    formData.email
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.email}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter email"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 
@@ -448,21 +474,15 @@ const Checkout = () => {
               <div>
 
                 <label className="block font-semibold mb-2 dark:text-white">
-                  Phone Number
+                  Phone
                 </label>
 
                 <input
                   type="text"
                   name="phone"
-                  value={
-                    formData.phone
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.phone}
+                  onChange={handleChange}
                   required
-                  maxLength="10"
-                  placeholder="9876543210"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 
@@ -478,14 +498,9 @@ const Checkout = () => {
                 <input
                   type="text"
                   name="address"
-                  value={
-                    formData.address
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.address}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter address"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 
@@ -501,14 +516,9 @@ const Checkout = () => {
                 <input
                   type="text"
                   name="city"
-                  value={
-                    formData.city
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.city}
+                  onChange={handleChange}
                   required
-                  placeholder="Enter city"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 
@@ -524,42 +534,11 @@ const Checkout = () => {
                 <input
                   type="text"
                   name="country"
-                  value={
-                    formData.country
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.country}
+                  onChange={handleChange}
                   required
-                  placeholder="India"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
-
-              </div>
-
-              {/* PAYMENT */}
-              <div>
-
-                <label className="block font-semibold mb-2 dark:text-white">
-                  Payment Method
-                </label>
-
-                <select
-                  name="paymentMethod"
-                  value={
-                    formData.paymentMethod
-                  }
-                  onChange={
-                    handleChange
-                  }
-                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
-                >
-
-                  <option>
-                    Razorpay
-                  </option>
-
-                </select>
 
               </div>
 
@@ -579,9 +558,27 @@ const Checkout = () => {
           {/* RIGHT */}
           <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 h-fit">
 
-            <h2 className="text-3xl font-bold dark:text-white mb-8">
-              Order Summary
-            </h2>
+            <div className="flex justify-between items-center mb-8">
+
+              <h2 className="text-3xl font-bold dark:text-white">
+                Order Summary
+              </h2>
+
+              <span className="text-lg font-semibold text-slate-600 dark:text-slate-300">
+
+                Items {" "}
+
+                {
+                  cartItems.reduce(
+                    (acc, item) =>
+                      acc + item.qty,
+                    0
+                  )
+                }
+
+              </span>
+
+            </div>
 
             <div className="space-y-5">
 
@@ -594,17 +591,11 @@ const Checkout = () => {
                   >
 
                     <span>
-                      {item.name}
-                      {" "}
-                      x
-                      {" "}
-                      {item.qty}
+                      {item.name} x {item.qty}
                     </span>
 
                     <span>
-                      ₹
-                      {item.price *
-                        item.qty}
+                      ₹{item.price * item.qty}
                     </span>
 
                   </div>
@@ -656,12 +647,7 @@ const Checkout = () => {
                 </span>
 
                 <span className="text-green-500">
-
-                  -₹
-                  {discount.toFixed(
-                    2
-                  )}
-
+                  -₹{discount.toFixed(2)}
                 </span>
 
               </div>
@@ -674,10 +660,7 @@ const Checkout = () => {
                 </span>
 
                 <span className="text-blue-600">
-                  ₹
-                  {finalPrice.toFixed(
-                    2
-                  )}
+                  ₹{finalPrice.toFixed(2)}
                 </span>
 
               </div>

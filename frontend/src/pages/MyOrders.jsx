@@ -28,11 +28,11 @@ const MyOrders = () => {
       async () => {
 
         try {
-
-          const token =
-            localStorage.getItem(
-              "token"
-            );
+const token =
+  localStorage.getItem(
+    "token"
+  );
+          console.log(token);
 
           const data =
             await getMyOrders(
@@ -133,7 +133,7 @@ const MyOrders = () => {
       );
 
       doc.text(
-        `Total Amount: $${order.totalPrice}`,
+        `Total Amount: ₹${order.totalPrice}`,
         20,
         110
       );
@@ -173,7 +173,7 @@ const MyOrders = () => {
           y += 10;
 
           doc.text(
-            `Price: $${item.price}`,
+            `Price: ₹${item.price}`,
             30,
             y
           );
@@ -294,7 +294,7 @@ const MyOrders = () => {
                         </p>
 
                         <h3 className="font-bold text-blue-600">
-                          $
+                          ₹
                           {order.totalPrice}
                         </h3>
 
@@ -406,7 +406,7 @@ const MyOrders = () => {
                             </p>
 
                             <h3 className="text-3xl font-bold text-blue-600 mt-4">
-                              $
+                              ₹
                               {item.price}
                             </h3>
 

@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
 
-
 // ===============================
 // PROTECT ROUTE
 // ===============================
@@ -20,46 +19,66 @@ export const protect =
 
       try {
 
+        // GET TOKEN
         token =
           req.headers.authorization.split(
             " "
           )[1];
 
+        // VERIFY TOKEN
         const decoded =
           jwt.verify(
             token,
             process.env.JWT_SECRET
           );
 
+        console.log(decoded);
+
+        // FIND USER
         req.user =
           await User.findById(
-            decoded.id
+            decoded.id ||
+            decoded._id
           ).select("-password");
+
+        // USER NOT FOUND
+        if (!req.user) {
+
+          return res.status(401).json({
+            success: false,
+            message:
+              "User not found",
+          });
+        }
 
         next();
 
       } catch (error) {
 
-        return res
-          .status(401)
-          .json({
-            message:
-              "Token failed",
-          });
+        console.log(
+          "AUTH ERROR ❌"
+        );
+
+        console.log(error);
+
+        return res.status(401).json({
+          success: false,
+          message:
+            "Token failed",
+        });
       }
     }
 
+    // NO TOKEN
     if (!token) {
 
-      return res
-        .status(401)
-        .json({
-          message:
-            "Not authorized",
-        });
+      return res.status(401).json({
+        success: false,
+        message:
+          "Not authorized",
+      });
     }
   };
-
 
 // ===============================
 // ADMIN ONLY
@@ -76,11 +95,10 @@ export const adminOnly =
 
     } else {
 
-      return res
-        .status(403)
-        .json({
-          message:
-            "Admin access only",
-        });
+      return res.status(403).json({
+        success: false,
+        message:
+          "Admin access only",
+      });
     }
   };

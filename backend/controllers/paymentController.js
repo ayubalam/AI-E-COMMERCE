@@ -26,7 +26,9 @@ export const createRazorpayOrder =
       const options = {
 
         amount:
-          amount * 100,
+          Math.round(
+            Number(amount) * 100
+          ),
 
         currency:
           "INR",
