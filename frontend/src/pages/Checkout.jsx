@@ -26,6 +26,7 @@ const Checkout = () => {
     useState({
       name: "",
       email: "",
+      phone: "",
       address: "",
       city: "",
       country: "",
@@ -155,6 +156,14 @@ const Checkout = () => {
 
       try {
 
+        // AUTO INDIA FORMAT
+        const formattedPhone =
+          formData.phone.startsWith(
+            "+91"
+          )
+            ? formData.phone
+            : `+91${formData.phone}`;
+
         // CREATE PAYMENT ORDER
         const order =
           await checkoutPayment(
@@ -223,6 +232,9 @@ const Checkout = () => {
 
                       email:
                         formData.email,
+
+                      phone:
+                        formattedPhone,
 
                       address:
                         formData.address,
@@ -327,6 +339,9 @@ const Checkout = () => {
 
             email:
               formData.email,
+
+            contact:
+              formData.phone,
           },
 
           theme: {
@@ -429,6 +444,30 @@ const Checkout = () => {
 
               </div>
 
+              {/* PHONE */}
+              <div>
+
+                <label className="block font-semibold mb-2 dark:text-white">
+                  Phone Number
+                </label>
+
+                <input
+                  type="text"
+                  name="phone"
+                  value={
+                    formData.phone
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                  maxLength="10"
+                  placeholder="9876543210"
+                  className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
+                />
+
+              </div>
+
               {/* ADDRESS */}
               <div>
 
@@ -492,7 +531,7 @@ const Checkout = () => {
                     handleChange
                   }
                   required
-                  placeholder="Enter country"
+                  placeholder="India"
                   className="w-full border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none"
                 />
 

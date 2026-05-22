@@ -7,7 +7,9 @@ const orderSchema =
         type:
           mongoose.Schema.Types
             .ObjectId,
+
         ref: "User",
+
         required: true,
       },
 
@@ -37,6 +39,8 @@ const orderSchema =
         name: String,
 
         email: String,
+
+        phone: String,
 
         address: String,
 

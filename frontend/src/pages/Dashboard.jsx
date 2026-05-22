@@ -43,34 +43,10 @@ const Dashboard = () => {
       totalRevenue: 0,
     });
 
-  // CHART DATA
-  const salesData = [
-
-    {
-      name: "Jan",
-      sales: 4000,
-    },
-
-    {
-      name: "Feb",
-      sales: 3000,
-    },
-
-    {
-      name: "Mar",
-      sales: 5000,
-    },
-
-    {
-      name: "Apr",
-      sales: 7000,
-    },
-
-    {
-      name: "May",
-      sales: 6000,
-    },
-  ];
+  // REAL CHART DATA
+  const [salesData,
+    setSalesData] =
+    useState([]);
 
   // FETCH STATS
   useEffect(() => {
@@ -95,7 +71,7 @@ const Dashboard = () => {
 
           const response =
             await fetch(
-              "http://localhost:5000/api/admin/stats",
+              "http://localhost:5000/api/auth/admin/stats",
               {
                 headers: {
                   Authorization:
@@ -108,6 +84,10 @@ const Dashboard = () => {
             await response.json();
 
           setStats(data);
+
+          setSalesData(
+            data.monthlySales
+          );
 
         } catch (error) {
 

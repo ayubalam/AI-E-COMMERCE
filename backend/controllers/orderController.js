@@ -1,5 +1,8 @@
 import Order from "../models/Order.js";
 
+
+import sendSMS from "../utils/sendSMS.js";
+
 // CREATE ORDER
 export const createOrder =
   async (req, res) => {
@@ -24,6 +27,7 @@ export const createOrder =
 
       } = req.body;
 
+      // CREATE ORDER
       const order =
         await Order.create({
 
@@ -44,6 +48,28 @@ export const createOrder =
 
           paymentResult,
         });
+
+      // SEND SMS
+      if (
+        shippingInfo.phone
+      ) {
+
+        await sendSMS(
+
+          shippingInfo.phone,
+            
+
+          `Hello ${shippingInfo.name},
+
+Your order has been placed successfully 🚀
+
+Total Amount: ₹${totalPrice}
+
+Payment Method: ${paymentMethod}
+
+Thank you for shopping with AI Smart Commerce`
+        );
+      }
 
       res.status(201).json({
         success: true,
@@ -135,16 +161,17 @@ export const updateOrderStatus =
       }
 
       // UPDATE STATUS
-     order.orderStatus =
-  req.body.status;
+      order.orderStatus =
+        req.body.status;
 
-order.trackingNumber =
-  req.body.trackingNumber ||
-  order.trackingNumber;
+      order.trackingNumber =
+        req.body.trackingNumber ||
+        order.trackingNumber;
 
-order.courierService =
-  req.body.courierService ||
-  order.courierService;
+      order.courierService =
+        req.body.courierService ||
+        order.courierService;
+
       // DELIVERED
       if (
         req.body.status ===
