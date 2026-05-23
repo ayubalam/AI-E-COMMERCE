@@ -5,7 +5,6 @@ import {
 
 import {
   useParams,
-  Link,
 } from "react-router-dom";
 
 import {
@@ -18,7 +17,6 @@ import toast from "react-hot-toast";
 
 import {
   getSingleProduct,
-  getProducts,
 } from "../services/productService";
 
 import useCart from "../hooks/useCart";
@@ -41,10 +39,6 @@ const ProductDetails = () => {
     setProduct] =
     useState(null);
 
-  const [recommendedProducts,
-    setRecommendedProducts] =
-    useState([]);
-
   const [loading,
     setLoading] =
     useState(true);
@@ -57,6 +51,11 @@ const ProductDetails = () => {
   const [comment,
     setComment] =
     useState("");
+
+  // QUANTITY
+  const [qty,
+    setQty] =
+    useState(1);
 
   // FETCH PRODUCT
   useEffect(() => {
@@ -74,24 +73,6 @@ const ProductDetails = () => {
 
           setProduct(
             singleProduct
-          );
-
-          // ALL PRODUCTS
-          const allProducts =
-            await getProducts();
-
-          // AI RECOMMENDATION
-          const related =
-            allProducts.filter(
-              (item) =>
-                item.category ===
-                  singleProduct.category &&
-                item._id !==
-                  singleProduct._id
-            );
-
-          setRecommendedProducts(
-            related
           );
 
         } catch (error) {
@@ -217,6 +198,7 @@ const ProductDetails = () => {
   }
 
   return (
+
     <section className="min-h-screen bg-slate-100 dark:bg-slate-900 px-4 py-10">
 
       <div className="max-w-7xl mx-auto">
@@ -230,7 +212,7 @@ const ProductDetails = () => {
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-105 transition duration-500 cursor-zoom-in"
             />
 
           </div>
@@ -260,9 +242,11 @@ const ProductDetails = () => {
                 <FaStar />
 
                 <span className="font-bold">
+
                   {product.rating?.toFixed(
                     1
                   ) || 0}
+
                 </span>
 
               </div>
@@ -289,22 +273,77 @@ const ProductDetails = () => {
             {/* PRICE */}
             <h2 className="text-5xl font-bold text-blue-600 mt-8">
 
-              ${product.price}
+              ₹{product.price}
 
             </h2>
 
             {/* STOCK */}
-            <p className="mt-5 text-lg dark:text-white">
+            <div className="mt-5 flex items-center gap-3">
 
-              Stock:
-              {" "}
-              <span className="font-bold">
+              <span className="text-lg dark:text-white">
 
-                {product.stock}
+                Stock:
 
               </span>
 
-            </p>
+              {product.stock > 0 ? (
+
+                <span className="bg-green-100 text-green-600 px-4 py-2 rounded-full font-semibold text-sm">
+
+                  In Stock ({product.stock})
+
+                </span>
+
+              ) : (
+
+                <span className="bg-red-100 text-red-600 px-4 py-2 rounded-full font-semibold text-sm">
+
+                  Out Of Stock
+
+                </span>
+
+              )}
+
+            </div>
+
+            {/* QUANTITY */}
+            <div className="mt-8">
+
+              <label className="block mb-3 font-semibold dark:text-white">
+
+                Quantity
+
+              </label>
+
+              <select
+                value={qty}
+                onChange={(e) =>
+                  setQty(
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+                className="border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-2xl px-5 py-3 outline-none"
+              >
+
+                {[...Array(product.stock).keys()].map(
+                  (x) => (
+
+                    <option
+                      key={x + 1}
+                      value={x + 1}
+                    >
+
+                      {x + 1}
+
+                    </option>
+                  )
+                )}
+
+              </select>
+
+            </div>
 
             {/* BUTTONS */}
             <div className="flex flex-wrap gap-4 mt-10">
@@ -313,7 +352,12 @@ const ProductDetails = () => {
               <button
                 onClick={() => {
 
-                  addToCart(product);
+                  addToCart({
+
+                    ...product,
+
+                    qty,
+                  });
 
                   toast.success(
                     "Added To Cart"
@@ -325,6 +369,15 @@ const ProductDetails = () => {
                 <FaShoppingCart />
 
                 Add To Cart
+
+              </button>
+
+              {/* BUY NOW */}
+              <button
+                className="flex items-center gap-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90 text-white px-8 py-4 rounded-2xl font-semibold transition duration-300"
+              >
+
+                Buy Now
 
               </button>
 
@@ -487,7 +540,9 @@ const ProductDetails = () => {
                         <FaStar />
 
                         <span>
+
                           {review.rating}
+
                         </span>
 
                       </div>
@@ -499,103 +554,6 @@ const ProductDetails = () => {
                       {review.comment}
 
                     </p>
-
-                  </div>
-                )
-              )}
-
-            </div>
-          )}
-
-        </div>
-
-        {/* AI RECOMMENDATIONS */}
-        <div className="mt-20">
-
-          <div className="mb-10">
-
-            <h2 className="text-5xl font-bold dark:text-white">
-
-              AI Recommendations
-
-            </h2>
-
-            <p className="text-slate-500 dark:text-slate-300 mt-3">
-
-              Related products based on category
-
-            </p>
-
-          </div>
-
-          {recommendedProducts.length === 0 ? (
-
-            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-10 text-center">
-
-              <h3 className="text-3xl font-bold dark:text-white">
-
-                No Recommendations Found
-
-              </h3>
-
-            </div>
-
-          ) : (
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-              {recommendedProducts.map(
-                (item) => (
-
-                  <div
-                    key={item._id}
-                    className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden hover:scale-[1.02] transition duration-300"
-                  >
-
-                    {/* IMAGE */}
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-64 object-cover"
-                    />
-
-                    {/* CONTENT */}
-                    <div className="p-6">
-
-                      <span className="inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold">
-
-                        {item.category}
-
-                      </span>
-
-                      <h3 className="text-3xl font-bold dark:text-white mt-5">
-
-                        {item.name}
-
-                      </h3>
-
-                      <p className="text-slate-500 dark:text-slate-300 mt-4 line-clamp-2">
-
-                        {item.description}
-
-                      </p>
-
-                      <h4 className="text-4xl font-bold text-blue-600 mt-6">
-
-                        ${item.price}
-
-                      </h4>
-
-                      <Link
-                        to={`/products/${item._id}`}
-                        className="block mt-6 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl text-center font-semibold transition duration-300"
-                      >
-
-                        View Product
-
-                      </Link>
-
-                    </div>
 
                   </div>
                 )

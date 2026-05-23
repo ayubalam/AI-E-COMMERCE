@@ -13,7 +13,7 @@ import Cart from "../pages/Cart";
 
 import Wishlist from "../pages/Wishlist";
 
-import Dashboard from "../pages/Dashboard";
+import UserDashboard from "../pages/user/UserDashboard";
 
 import Login from "../pages/Login";
 
@@ -35,7 +35,11 @@ import MyOrders from "../pages/MyOrders";
 
 import AdminOrders from "../pages/admin/AdminOrders";
 
+import AdminDashboard from "../pages/admin/AdminDashboard";
+
 import Success from "../pages/Success";
+
+import Profile from "../pages/Profile";
 
 const AppRoutes = () => {
 
@@ -138,15 +142,31 @@ const AppRoutes = () => {
             }
          />
 
-        {/* Protected */}
+           <Route
+             path="/admin/dashboard"
+             element={
+                <ProtectedRoute>
+                    <AdminDashboard />
+                    </ProtectedRoute>
+                 }
+               />
+       <Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <UserDashboard />
+    </ProtectedRoute>
+  }
+/>
+
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
 
       </Routes>
 

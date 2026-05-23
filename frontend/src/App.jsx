@@ -8,6 +8,8 @@ import WishlistProvider from "./context/WishlistContext";
 
 import ThemeProvider from "./context/ThemeContext";
 
+import ChatBot from "./components/ChatBot";
+
 const App = () => {
 
   return (
@@ -20,7 +22,13 @@ const App = () => {
 
           <WishlistProvider>
 
-            <AppRoutes />
+            <div className="relative">
+
+              <AppRoutes />
+
+              <ChatBot />
+
+            </div>
 
           </WishlistProvider>
 

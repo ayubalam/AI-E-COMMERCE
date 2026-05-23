@@ -110,10 +110,11 @@ export const createOrder =
         shippingInfo.phone
       ) {
 
-      await sendSMS(
-  shippingInfo.phone,
+        await sendSMS(
 
-  `Hello ${shippingInfo.name},
+          shippingInfo.phone,
+
+          `Hello ${shippingInfo.name},
 
 Your order has been placed successfully.
 
@@ -122,7 +123,7 @@ Amount: Rs ${totalPrice}
 Payment Method: ${paymentMethod}
 
 Thank you for shopping with AI Smart Commerce.`
-);
+        );
       }
 
       res.status(201).json({
@@ -167,6 +168,82 @@ export const getMyOrders =
 
       res.status(500).json({
         success: false,
+        message:
+          error.message,
+      });
+    }
+  };
+
+// USER DASHBOARD STATS
+export const getUserDashboardStats =
+  async (req, res) => {
+
+    try {
+
+      console.log(
+        "LOGGED USER:",
+        req.user
+      );
+
+      // GET USER ORDERS
+      const orders =
+        await Order.find({
+
+          user:
+            req.user._id,
+        });
+
+      console.log(
+        "ORDERS:",
+        orders
+      );
+
+      // TOTAL ORDERS
+      const totalOrders =
+        orders.length;
+
+      // TOTAL SPENT
+      const totalSpent =
+        orders.reduce(
+          (acc, item) =>
+            acc +
+            item.totalPrice,
+          0
+        );
+
+      // RECENT ORDERS
+      const recentOrders =
+        orders
+          .sort(
+            (a, b) =>
+              new Date(
+                b.createdAt
+              ) -
+              new Date(
+                a.createdAt
+              )
+          )
+          .slice(0, 5);
+
+      res.json({
+
+        success: true,
+
+        totalOrders,
+
+        totalSpent,
+
+        recentOrders,
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+
+        success: false,
+
         message:
           error.message,
       });

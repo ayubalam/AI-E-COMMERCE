@@ -374,6 +374,105 @@ const token =
 
                   </div>
 
+                  {/* TRACKING TIMELINE */}
+<div className="px-6 py-6">
+
+  <div className="flex items-center justify-between relative">
+
+    {/* LINE */}
+    <div className="absolute top-5 left-0 w-full h-1 bg-slate-300 dark:bg-slate-700 z-0"></div>
+
+    {/* PROCESSING */}
+    <div className="relative z-10 flex flex-col items-center">
+
+      <div
+        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white
+
+        ${
+          order.orderStatus === "Processing" ||
+          order.orderStatus === "Shipped" ||
+          order.orderStatus === "Delivered"
+
+            ? "bg-blue-600"
+
+            : "bg-slate-400"
+        }
+      `}
+      >
+
+        1
+
+      </div>
+
+      <p className="mt-3 text-sm font-semibold dark:text-white">
+
+        Processing
+
+      </p>
+
+    </div>
+
+    {/* SHIPPED */}
+    <div className="relative z-10 flex flex-col items-center">
+
+      <div
+        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white
+
+        ${
+          order.orderStatus === "Shipped" ||
+          order.orderStatus === "Delivered"
+
+            ? "bg-purple-600"
+
+            : "bg-slate-400"
+        }
+      `}
+      >
+
+        2
+
+      </div>
+
+      <p className="mt-3 text-sm font-semibold dark:text-white">
+
+        Shipped
+
+      </p>
+
+    </div>
+
+    {/* DELIVERED */}
+    <div className="relative z-10 flex flex-col items-center">
+
+      <div
+        className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-white
+
+        ${
+          order.orderStatus === "Delivered"
+
+            ? "bg-green-600"
+
+            : "bg-slate-400"
+        }
+      `}
+      >
+
+        3
+
+      </div>
+
+      <p className="mt-3 text-sm font-semibold dark:text-white">
+
+        Delivered
+
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
                   {/* PRODUCTS */}
                   <div className="p-6 space-y-5">
 

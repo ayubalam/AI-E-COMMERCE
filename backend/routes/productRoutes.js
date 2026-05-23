@@ -11,9 +11,9 @@ import {
   deleteProduct,
 
   updateProduct,
+createReview, 
 
-  createReview,
-
+getRecommendedProducts,
 } from "../controllers/productController.js";
 
 import {
@@ -38,6 +38,12 @@ router.get(
 router.get(
   "/:id",
   getProduct
+);
+
+// AI RECOMMENDATIONS
+router.get(
+  "/recommended/products",
+  getRecommendedProducts
 );
 
 // REVIEW

@@ -1,58 +1,77 @@
-import { useEffect, useState } from "react";
+import {
+  useState,
+  useEffect,
+} from "react";
 
-import ThemeContext from "./ThemeContextObject";
+import ThemeContextObject
+  from "./ThemeContextObject";
 
-const ThemeProvider = ({ children }) => {
+const ThemeProvider =
+  ({ children }) => {
 
-  const [darkMode, setDarkMode] =
-    useState(() => {
+    const [darkMode,
+      setDarkMode] =
+      useState(() => {
 
-      const savedTheme =
-        localStorage.getItem("darkMode");
+        return (
+          localStorage.getItem(
+            "theme"
+          ) === "dark"
+        );
+      });
 
-      return savedTheme
-        ? JSON.parse(savedTheme)
-        : false;
-    });
+    // APPLY DARK MODE
+    useEffect(() => {
 
-  // Save Theme
-  useEffect(() => {
+      if (darkMode) {
 
-    localStorage.setItem(
-      "darkMode",
-      JSON.stringify(darkMode)
+        document.documentElement.classList.add(
+          "dark"
+        );
+
+        localStorage.setItem(
+          "theme",
+          "dark"
+        );
+
+      } else {
+
+        document.documentElement.classList.remove(
+          "dark"
+        );
+
+        localStorage.setItem(
+          "theme",
+          "light"
+        );
+      }
+
+    }, [darkMode]);
+
+    // TOGGLE THEME
+    const toggleTheme =
+      () => {
+
+        setDarkMode(
+          !darkMode
+        );
+      };
+
+    return (
+
+      <ThemeContextObject.Provider
+        value={{
+
+          darkMode,
+
+          toggleTheme,
+        }}
+      >
+
+        {children}
+
+      </ThemeContextObject.Provider>
     );
-
-    if (darkMode) {
-
-      document.documentElement.classList.add(
-        "dark"
-      );
-
-    } else {
-
-      document.documentElement.classList.remove(
-        "dark"
-      );
-    }
-
-  }, [darkMode]);
-
-  // Toggle Theme
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
   };
-
-  return (
-    <ThemeContext.Provider
-      value={{
-        darkMode,
-        toggleTheme,
-      }}
-    >
-      {children}
-    </ThemeContext.Provider>
-  );
-};
 
 export default ThemeProvider;

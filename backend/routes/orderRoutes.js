@@ -3,6 +3,7 @@ import express from "express";
 import {
   createOrder,
   getMyOrders,
+  getUserDashboardStats,
   getAllOrders,
   markDelivered,
   updateOrderStatus,
@@ -28,6 +29,13 @@ router.get(
   "/my-orders",
   protect,
   getMyOrders
+);
+
+// USER DASHBOARD
+router.get(
+  "/dashboard-stats",
+  protect,
+  getUserDashboardStats
 );
 
 // ADMIN ALL ORDERS

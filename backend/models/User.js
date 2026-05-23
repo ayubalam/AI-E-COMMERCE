@@ -19,6 +19,12 @@ const userSchema =
         required: true,
       },
 
+      // PROFILE IMAGE
+      avatar: {
+        type: String,
+        default: "",
+      },
+
       role: {
         type: String,
         default: "user",

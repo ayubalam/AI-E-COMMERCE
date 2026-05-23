@@ -4,6 +4,11 @@ dotenv.config();
 
 console.log(process.env.MONGO_URI);
 
+console.log(
+  "GEMINI KEY:",
+  process.env.GEMINI_API_KEY
+);
+
 import express from "express";
 
 import mongoose from "mongoose";
@@ -22,6 +27,12 @@ import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 
 import couponRoutes from "./routes/couponRoutes.js";
+
+import adminRoutes from "./routes/adminRoutes.js";
+
+import chatRoutes from "./routes/chatRoutes.js";
+
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
@@ -130,6 +141,21 @@ app.use(
 app.use(
   "/api/coupons",
   couponRoutes
+);
+
+app.use(
+  "/api/admin",
+  adminRoutes
+);
+
+app.use(
+  "/api/chat",
+  chatRoutes
+);
+
+app.use(
+  "/api/users",
+  userRoutes
 );
 
 // ===============================

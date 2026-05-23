@@ -13,82 +13,109 @@ import useWishlist from "../../hooks/useWishlist";
 
 const ProductCard = ({ product }) => {
 
-  const { addToCart } = useCart();
+  const { addToCart } =
+    useCart();
 
   const { addToWishlist } =
     useWishlist();
 
   return (
-    <div className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2">
 
-      {/* Product Image */}
-      <Link to={`/products/${product.id}`}>
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 hover:-translate-y-2 border border-slate-200 dark:border-slate-800 group">
 
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-64 w-full object-cover"
-        />
+      {/* PRODUCT IMAGE */}
+      <Link
+        to={`/products/${product._id || product.id}`}
+      >
+
+        <div className="overflow-hidden">
+
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-48 w-full object-cover group-hover:scale-105 transition duration-500"
+          />
+
+        </div>
+
       </Link>
 
-      {/* Content */}
-      <div className="p-5">
+      {/* CONTENT */}
+      <div className="p-4">
 
-        {/* Category */}
-        <p className="text-sm text-blue-600 font-medium">
+        {/* CATEGORY */}
+        <p className="text-xs text-blue-600 font-medium uppercase tracking-wide">
+
           {product.category}
+
         </p>
 
-        {/* Name */}
-        <h3 className="text-2xl font-bold mt-2 text-slate-800">
+        {/* NAME */}
+        <h3 className="text-xl font-bold mt-2 text-slate-800 dark:text-white line-clamp-1">
+
           {product.name}
+
         </h3>
 
-        {/* Description */}
-        <p className="text-slate-500 mt-3 text-sm leading-relaxed">
+        {/* DESCRIPTION */}
+        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm leading-relaxed line-clamp-2">
+
           {product.description}
+
         </p>
 
-        {/* Rating */}
-        <div className="flex items-center gap-2 mt-4">
+        {/* RATING */}
+        <div className="flex items-center gap-2 mt-3">
 
-          <FaStar className="text-yellow-400" />
+          <FaStar className="text-yellow-400 text-sm" />
 
-          <span className="font-semibold">
-            {product.rating}
+          <span className="font-semibold dark:text-white text-sm">
+
+            {product.rating || 0}
+
           </span>
 
-          <span className="text-slate-500 text-sm">
+          <span className="text-slate-500 dark:text-slate-400 text-xs">
+
             ({product.stock} in stock)
+
           </span>
+
         </div>
 
-        {/* Price */}
-        <div className="mt-6">
+        {/* PRICE */}
+        <div className="mt-4">
 
-          <span className="text-3xl font-bold text-slate-800">
-            ${product.price}
+          <span className="text-2xl font-bold text-slate-800 dark:text-white">
+
+            ₹{product.price}
+
           </span>
+
         </div>
 
-        {/* Buttons */}
-        <div className="mt-6 flex flex-col gap-3">
+        {/* BUTTONS */}
+      <div className="mt-4 grid grid-cols-2 gap-2">
 
-          {/* Add To Cart */}
+          {/* ADD TO CART */}
           <button
             onClick={() => {
+
               addToCart(product);
 
               toast.success(
                 "Product added to cart"
               );
             }}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-2xl font-semibold transition duration-300"
+
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90"
           >
+
             Add To Cart
+
           </button>
 
-          {/* Wishlist */}
+          {/* WISHLIST */}
           <button
             onClick={() => {
 
@@ -98,14 +125,19 @@ const ProductCard = ({ product }) => {
                 "Added To Wishlist"
               );
             }}
-            className="bg-red-500 hover:bg-red-600 text-white py-3 rounded-2xl flex items-center justify-center gap-2 transition duration-300"
+           className="bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-90"
           >
+
             <FaHeart />
 
             Wishlist
+
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };

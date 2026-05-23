@@ -69,6 +69,32 @@ const AdminOrders = () => {
 
   }, [fetchOrders]);
 
+  // SAVE NOTIFICATION
+  const saveNotification =
+    (message) => {
+
+      const existingNotifications =
+        JSON.parse(
+          localStorage.getItem(
+            "notifications"
+          )
+        ) || [];
+
+      const newNotification = {
+
+  id: crypto.randomUUID(),
+
+  title: message,
+};
+      localStorage.setItem(
+        "notifications",
+        JSON.stringify([
+          newNotification,
+          ...existingNotifications,
+        ])
+      );
+    };
+
   // DELIVER
   const handleDeliver =
     async (id) => {
@@ -78,6 +104,10 @@ const AdminOrders = () => {
         await markDelivered(
           id,
           token
+        );
+
+        saveNotification(
+          "Your order has been delivered successfully 🎉"
         );
 
         toast.success(
@@ -132,6 +162,10 @@ const AdminOrders = () => {
           }
         );
 
+        saveNotification(
+          `Your order status updated to ${status}`
+        );
+
         toast.success(
           "Status Updated"
         );
@@ -155,7 +189,9 @@ const AdminOrders = () => {
       <section className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900">
 
         <h1 className="text-4xl font-bold dark:text-white">
+
           Loading Orders...
+
         </h1>
 
       </section>
@@ -163,6 +199,7 @@ const AdminOrders = () => {
   }
 
   return (
+
     <section className="min-h-screen bg-slate-100 dark:bg-slate-900 px-4 py-10">
 
       <div className="max-w-7xl mx-auto">
@@ -171,11 +208,15 @@ const AdminOrders = () => {
         <div className="mb-10">
 
           <h1 className="text-5xl font-bold dark:text-white">
+
             Admin Orders
+
           </h1>
 
           <p className="text-slate-500 dark:text-slate-300 mt-3">
+
             Manage customer orders
+
           </p>
 
         </div>
@@ -196,11 +237,15 @@ const AdminOrders = () => {
                   <div>
 
                     <h2 className="text-2xl font-bold dark:text-white">
+
                       {order.user?.name}
+
                     </h2>
 
                     <p className="text-slate-600 dark:text-slate-300">
+
                       {order.user?.email}
+
                     </p>
 
                   </div>
@@ -211,11 +256,15 @@ const AdminOrders = () => {
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
+
                         Payment
+
                       </p>
 
                       <h3 className="font-bold dark:text-white">
+
                         {order.paymentMethod}
+
                       </h3>
 
                     </div>
@@ -224,11 +273,15 @@ const AdminOrders = () => {
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
+
                         Total
+
                       </p>
 
                       <h3 className="font-bold text-blue-600">
-                        ${order.totalPrice}
+
+                        ₹{order.totalPrice}
+
                       </h3>
 
                     </div>
@@ -237,43 +290,199 @@ const AdminOrders = () => {
                     <div>
 
                       <p className="text-slate-500 dark:text-slate-300">
+
                         Status
+
                       </p>
 
-                      <select
-                        value={
-                          order.orderStatus
-                        }
+                      <div className="flex items-center gap-3 mt-2">
 
-                        onChange={(e) =>
-                          handleStatusUpdate(
-                            order._id,
-                            e.target.value,
-                            order.trackingNumber,
-                            order.courierService
-                          )
-                        }
+                        <span
+                          className={`px-4 py-2 rounded-full text-sm font-bold text-white
 
-                        className="border border-slate-300 rounded-xl px-3 py-2 dark:bg-slate-700 dark:text-white"
+                          ${
+                            order.orderStatus ===
+                            "Delivered"
+
+                              ? "bg-green-500"
+
+                              : order.orderStatus ===
+                                "Shipped"
+
+                              ? "bg-purple-500"
+
+                              : order.orderStatus ===
+                                "Processing"
+
+                              ? "bg-yellow-500"
+
+                              : "bg-blue-500"
+                          }
+                        `}
+                        >
+
+                          {order.orderStatus}
+
+                        </span>
+
+                        <select
+                          value={
+                            order.orderStatus
+                          }
+
+                          onChange={(e) =>
+                            handleStatusUpdate(
+                              order._id,
+                              e.target.value,
+                              order.trackingNumber,
+                              order.courierService
+                            )
+                          }
+
+                          className="border border-slate-300 rounded-xl px-3 py-2 dark:bg-slate-700 dark:text-white"
+                        >
+
+                          <option>
+                            Paid
+                          </option>
+
+                          <option>
+                            Processing
+                          </option>
+
+                          <option>
+                            Shipped
+                          </option>
+
+                          <option>
+                            Delivered
+                          </option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* ORDER TIMELINE */}
+                <div className="px-6 pt-6">
+
+                  <div className="flex items-center justify-between relative">
+
+                    {/* LINE */}
+                    <div className="absolute top-5 left-0 w-full h-1 bg-slate-300 dark:bg-slate-700"></div>
+
+                    {/* PAID */}
+                    <div className="relative z-10 flex flex-col items-center">
+
+                      <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+
+                        1
+
+                      </div>
+
+                      <p className="mt-2 text-sm dark:text-white">
+
+                        Paid
+
+                      </p>
+
+                    </div>
+
+                    {/* PROCESSING */}
+                    <div className="relative z-10 flex flex-col items-center">
+
+                      <div
+                        className={`w-10 h-10 rounded-full text-white flex items-center justify-center font-bold
+
+                        ${
+                          order.orderStatus ===
+                            "Processing" ||
+                          order.orderStatus ===
+                            "Shipped" ||
+                          order.orderStatus ===
+                            "Delivered"
+
+                            ? "bg-yellow-500"
+
+                            : "bg-slate-400"
+                        }
+                      `}
                       >
 
-                        <option>
-                          Paid
-                        </option>
+                        2
 
-                        <option>
-                          Processing
-                        </option>
+                      </div>
 
-                        <option>
-                          Shipped
-                        </option>
+                      <p className="mt-2 text-sm dark:text-white">
 
-                        <option>
-                          Delivered
-                        </option>
+                        Processing
 
-                      </select>
+                      </p>
+
+                    </div>
+
+                    {/* SHIPPED */}
+                    <div className="relative z-10 flex flex-col items-center">
+
+                      <div
+                        className={`w-10 h-10 rounded-full text-white flex items-center justify-center font-bold
+
+                        ${
+                          order.orderStatus ===
+                            "Shipped" ||
+                          order.orderStatus ===
+                            "Delivered"
+
+                            ? "bg-purple-500"
+
+                            : "bg-slate-400"
+                        }
+                      `}
+                      >
+
+                        3
+
+                      </div>
+
+                      <p className="mt-2 text-sm dark:text-white">
+
+                        Shipped
+
+                      </p>
+
+                    </div>
+
+                    {/* DELIVERED */}
+                    <div className="relative z-10 flex flex-col items-center">
+
+                      <div
+                        className={`w-10 h-10 rounded-full text-white flex items-center justify-center font-bold
+
+                        ${
+                          order.orderStatus ===
+                          "Delivered"
+
+                            ? "bg-green-500"
+
+                            : "bg-slate-400"
+                        }
+                      `}
+                      >
+
+                        4
+
+                      </div>
+
+                      <p className="mt-2 text-sm dark:text-white">
+
+                        Delivered
+
+                      </p>
 
                     </div>
 
@@ -282,7 +491,7 @@ const AdminOrders = () => {
                 </div>
 
                 {/* ADMIN INPUTS */}
-                <div className="px-6 pt-5 flex flex-col md:flex-row gap-4">
+                <div className="px-6 pt-8 flex flex-col md:flex-row gap-4">
 
                   <input
                     type="text"
@@ -331,26 +540,34 @@ const AdminOrders = () => {
                         className="flex flex-col md:flex-row gap-5 border-b border-slate-200 dark:border-slate-700 pb-5"
                       >
 
+                        {/* IMAGE */}
                         <img
                           src={item.image}
                           alt={item.name}
                           className="w-full md:w-32 h-32 object-cover rounded-2xl"
                         />
 
+                        {/* CONTENT */}
                         <div className="flex-1">
 
                           <h2 className="text-2xl font-bold dark:text-white">
+
                             {item.name}
+
                           </h2>
 
                           <p className="text-slate-500 dark:text-slate-300 mt-2">
+
                             Quantity:
                             {" "}
                             {item.qty}
+
                           </p>
 
                           <h3 className="text-3xl font-bold text-blue-600 mt-4">
-                            ${item.price}
+
+                            ₹{item.price}
+
                           </h3>
 
                         </div>
@@ -368,7 +585,7 @@ const AdminOrders = () => {
                           order._id
                         )
                       }
-                      className="mt-5 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl font-semibold"
+                      className="mt-5 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl font-semibold transition duration-300"
                     >
 
                       Mark Delivered
@@ -385,6 +602,7 @@ const AdminOrders = () => {
         </div>
 
       </div>
+
     </section>
   );
 };

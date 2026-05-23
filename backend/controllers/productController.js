@@ -34,18 +34,154 @@ export const getProducts =
 
     try {
 
+      const keyword =
+        req.query.keyword
+          ? {
+              name: {
+                $regex:
+                  req.query.keyword,
+                $options: "i",
+              },
+            }
+          : {};
+
+      const category =
+        req.query.category
+          ? {
+              category:
+                req.query.category,
+            }
+          : {};
+
+      // PRICE FILTER
+      let priceFilter = {};
+
+      if (
+        req.query.minPrice &&
+        req.query.maxPrice
+      ) {
+
+        priceFilter = {
+
+          price: {
+
+            $gte:
+              Number(
+                req.query.minPrice
+              ),
+
+            $lte:
+              Number(
+                req.query.maxPrice
+              ),
+          },
+        };
+      }
+
+      // SORTING
+      let sortOption = {};
+
+      if (
+        req.query.sort ===
+        "low-high"
+      ) {
+
+        sortOption = {
+          price: 1,
+        };
+
+      } else if (
+        req.query.sort ===
+        "high-low"
+      ) {
+
+        sortOption = {
+          price: -1,
+        };
+
+      } else if (
+        req.query.sort ===
+        "latest"
+      ) {
+
+        sortOption = {
+          createdAt: -1,
+        };
+      }
+
       const products =
-        await Product.find();
+        await Product.find({
+
+          ...keyword,
+
+          ...category,
+
+          ...priceFilter,
+        }).sort(
+          sortOption
+        );
 
       res.json({
+
         success: true,
+
         products,
       });
 
     } catch (error) {
 
       res.status(500).json({
+
         success: false,
+
+        message:
+          error.message,
+      });
+    }
+  };
+
+  // AI RECOMMENDED PRODUCTS
+export const getRecommendedProducts =
+  async (req, res) => {
+
+    try {
+
+      // TOP RATED PRODUCTS
+      const recommended =
+        await Product.find({
+
+          rating: {
+            $gte: 3,
+          },
+
+          stock: {
+            $gt: 0,
+          },
+        })
+
+        .sort({
+
+          rating: -1,
+
+          numReviews: -1,
+        })
+
+        .limit(8);
+
+      res.json({
+
+        success: true,
+
+        products:
+          recommended,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+
+        success: false,
+
         message:
           error.message,
       });
@@ -257,7 +393,7 @@ export const deleteProduct =
           "Product deleted successfully",
       });
 
-    } catch (error) {
+    } catch (error) {4
 
       res.status(500).json({
         success: false,

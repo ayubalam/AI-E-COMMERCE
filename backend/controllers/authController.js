@@ -121,6 +121,8 @@ export const registerUser =
           name: user.name,
           email: user.email,
           role: user.role,
+          avatar:
+            user.avatar,
         },
       });
 
@@ -193,6 +195,8 @@ export const loginUser =
           name: user.name,
           email: user.email,
           role: user.role,
+          avatar:
+            user.avatar,
         },
       });
 
