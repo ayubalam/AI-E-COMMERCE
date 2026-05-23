@@ -46,16 +46,22 @@ const ChatBot = () => {
 
   // SEND MESSAGE
   const sendMessage =
-    async () => {
+    async (
+      customMessage
+    ) => {
 
-      if (!message.trim())
+      const finalMessage =
+        customMessage ||
+        message;
+
+      if (!finalMessage.trim())
         return;
 
       const userMessage = {
 
         sender: "user",
 
-        text: message,
+        text: finalMessage,
       };
 
       setMessages(
@@ -64,9 +70,6 @@ const ChatBot = () => {
           userMessage,
         ]
       );
-
-      const currentMessage =
-        message;
 
       setMessage("");
 
@@ -79,7 +82,7 @@ const ChatBot = () => {
             "http://localhost:5000/api/chat",
             {
               message:
-                currentMessage,
+                finalMessage,
             }
           );
 
@@ -211,6 +214,31 @@ const ChatBot = () => {
 
           </div>
 
+          {/* QUICK SUGGESTIONS */}
+          <div className="px-3 pt-3 flex flex-wrap gap-2 bg-[#eef2f7]">
+
+            {[
+              "Best products",
+              "Track my order",
+              "Latest deals",
+              "Help me shop",
+            ].map((item) => (
+
+              <button
+                key={item}
+                onClick={() =>
+                  sendMessage(item)
+                }
+                className="px-3 py-2 rounded-full bg-white text-slate-700 text-xs shadow hover:bg-blue-600 hover:text-white transition duration-300"
+              >
+
+                {item}
+
+              </button>
+            ))}
+
+          </div>
+
           {/* CHAT AREA */}
           <div className="flex-1 overflow-y-auto px-3 py-4 bg-[#eef2f7] space-y-3">
 
@@ -265,9 +293,17 @@ const ChatBot = () => {
 
               <div className="flex justify-start">
 
-                <div className="bg-white text-slate-800 px-3 py-2 rounded-2xl shadow-sm text-[13px]">
+                <div className="bg-white text-slate-800 px-4 py-3 rounded-2xl shadow-sm">
 
-                  Typing...
+                  <div className="flex items-center gap-2">
+
+                    <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></span>
+
+                    <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-100"></span>
+
+                    <span className="w-2 h-2 bg-pink-500 rounded-full animate-bounce delay-200"></span>
+
+                  </div>
 
                 </div>
 
